@@ -10,7 +10,7 @@ import {
 import type { RootState } from "./store";
 import { connect } from "react-redux";
 
-import { Grid, Select } from "@mantine/core";
+import { Grid, Select, Flex, Group } from "@mantine/core";
 import { DatePickerInput } from '@mantine/dates';
 
 import {
@@ -148,49 +148,53 @@ class LineChartView extends React.Component<ILineChartViewProp> {
     public render() {
         return (
             <Grid>
-                <Grid.Col span={2} offset={6}>
-                    <Select
-                        label="Interval"
-                        placeholder="Pick one"
-                        data={[
-                            { value: "month", label: "Month" },
-                            { value: "date", label: "Date" },
-                        ]}
-                        value={this.props.interval}
-                        onChange={(event) => {
-                            if (typeof event == "string") {
-                                this.props.setInterval(event);
-                            }
-                        }}
-                    />
-                </Grid.Col>
+                <Grid.Col>
+                    <Flex
+                        mih={50}
+                        gap="xl"
+                        justify="flex-end"
+                        align="center"
+                        direction="row"
+                        wrap="wrap"
+                    >
+                        <Group>
+                            <Select
+                                label="Interval"
+                                placeholder="Pick one"
+                                data={[
+                                    { value: "month", label: "Month" },
+                                    { value: "date", label: "Date" },
+                                ]}
+                                value={this.props.interval}
+                                onChange={(event) => {
+                                    if (typeof event == "string") {
+                                        this.props.setInterval(event);
+                                    }
+                                }}
+                            />
+                            <Select
+                                label="Developer"
+                                placeholder="Pick one"
+                                data={this.props.git_log_stats.developer_infos ?
+                                    Object.keys(this.props.git_log_stats.developer_infos) : []}
+                                value={this.props.developer}
+                                onChange={(event) => {
+                                    if (typeof event == "string") {
+                                        this.props.setDeveloper(event);
+                                    }
+                                }}
+                            />
+                            <DatePickerInput
+                                type="range"
+                                label="Pick dates range"
+                                placeholder="Pick dates range"
+                                value={0}
+                                // onChange={setValue}
+                                mx="auto"
+                            />
+                        </Group>
 
-                <Grid.Col span={2}>
-                    <Select
-                        label="Developer"
-                        placeholder="Pick one"
-                        data={this.props.git_log_stats.developer_infos ?
-                            Object.keys(this.props.git_log_stats.developer_infos) : []}
-                        value={this.props.developer}
-                        onChange={(event) => {
-                            if (typeof event == "string") {
-                                this.props.setDeveloper(event);
-                            }
-                        }}
-                    />
-                    <DatePickerInput
-                        type="range"
-                        label="Pick dates range"
-                        placeholder="Pick dates range"
-                        value={0}
-                        // onChange={setValue}
-                        mx="auto"
-                        maw={400}
-                    />
-                </Grid.Col>
-
-                <Grid.Col span={2}>
-
+                    </Flex>
                 </Grid.Col>
 
                 <Grid.Col span={12}>
