@@ -148,7 +148,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
     public render() {
         return (
             <Grid>
-                <Grid.Col>
+                <Grid.Col span={12}>
                     <Flex
                         mih={50}
                         gap="xl"
@@ -193,7 +193,6 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                 mx="auto"
                             />
                         </Group>
-
                     </Flex>
                 </Grid.Col>
 

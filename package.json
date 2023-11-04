@@ -28,6 +28,8 @@
     "@tiptap/extension-link": "^2.1.12",
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",
+    "buffer": "^6.0.3",
+    "csv-stringify": "^6.4.4",
     "dayjs": "^1.11.10",
     "embla-carousel-react": "^7.1.0",
     "react": "^18.2.0",

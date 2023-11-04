@@ -47,25 +47,25 @@ function App() {
 
     const import_file = async () => {
         try {
-            const selected = await open({
+            const file_path = await open({
                 title: "Open Git Log File",
                 multiple: false,
                 directory: false,
                 filters
             });
 
-            if (selected === null) {
+            if (file_path === null) {
                 console.log("canceld.");
             }
             else {
-                if (typeof selected === "string") {
+                if (typeof file_path === "string") {
                     setTitle("Loading...");
-                    await invoke('import_git_log_file', { file_path: selected }).then((result) => {
+                    await invoke('import_git_log_file', { file_path: file_path }).then((result) => {
                         let [git_log_stats, commit_status] = result as [GitLogStats, CommitStatus];
                         setGitLogStats(git_log_stats);
                         setCommitStatus(commit_status);
                     });
-                    setTitle(selected);
+                    setTitle(file_path);
                 }
             }
         } catch (err) {
@@ -104,7 +104,7 @@ function App() {
             path: "/TableView",
             name: "Table",
             exact: false,
-            component: <TableView infos={commit_status} />
+            component: <TableView commit_status={commit_status} />
         }
     ]
 

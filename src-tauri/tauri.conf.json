@@ -19,11 +19,13 @@
       },
       "dialog": {
         "all": false,
-        "open": true
+        "open": true,
+        "save": true
       },
       "fs": {
         "all": false,
-        "readFile": true
+        "readFile": true,
+        "writeFile": true
       }
     },
     "bundle": {
