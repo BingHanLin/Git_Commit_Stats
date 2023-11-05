@@ -191,6 +191,78 @@ class LineChartView extends React.Component<ILineChartViewProp> {
         return (
             <Grid align="stretch" columns={12}>
                 <Grid.Col span={12}>
+                    <Flex
+                        mih={50}
+                        gap="xl"
+                        justify="flex-end"
+                        align="center"
+                        direction="row"
+                        wrap="wrap"
+                    >
+                        <Group>
+                            <Select
+                                label="Interval"
+                                placeholder="Pick one"
+                                data={[
+                                    { value: "month", label: "Month" },
+                                    { value: "date", label: "Date" },
+                                ]}
+                                value={this.props.interval}
+                                onChange={(event) => {
+                                    if (typeof event == "string") {
+                                        this.props.setInterval(event);
+                                    }
+                                }}
+                            />
+                            <Select
+                                label="Developer"
+                                placeholder="Pick one"
+                                data={
+                                    this.props.git_log_stats.developer_infos
+                                        ? Object.keys(this.props.git_log_stats.developer_infos)
+                                        : []
+                                }
+                                value={this.props.developer}
+                                onChange={(event) => {
+                                    if (typeof event == "string") {
+                                        this.props.setDeveloper(event);
+                                    }
+                                }}
+                            />
+                            <DatePickerInput
+                                styles={{
+                                    wrapper: {
+                                        background: 'white',
+                                    },
+                                }}
+                                type="range"
+                                label="Pick dates range"
+                                placeholder="Pick dates range"
+                                value={convertIntoDate(this.props.date_range)}
+                                onChange={(event) => {
+                                    let date_range: [number | null, number | null] = [null, null];
+
+                                    if (event[0] !== null) {
+                                        date_range[0] = event[0].getTime();
+                                    } else {
+                                        date_range[0] = null;
+                                    }
+
+                                    if (event[1] !== null) {
+                                        date_range[1] = event[1].getTime();
+                                    } else {
+                                        date_range[1] = null;
+                                    }
+
+                                    this.props.setDateRange(date_range);
+                                }}
+                                mx="auto"
+                            />
+                        </Group>
+                    </Flex>
+                </Grid.Col>
+
+                <Grid.Col span={12}>
                     <Tabs defaultValue="commits">
                         <Tabs.List>
                             <Tabs.Tab value="commits">Commits Graph</Tabs.Tab>
@@ -201,109 +273,51 @@ class LineChartView extends React.Component<ILineChartViewProp> {
 
                         <Tabs.Panel value="commits" pt="xs">
                             <Card shadow="sm" padding="lg" radius="md" withBorder>
-                                <Stack>
-                                    <Flex
-                                        mih={50}
-                                        gap="xl"
-                                        justify="flex-end"
-                                        align="center"
-                                        direction="row"
-                                        wrap="wrap"
+                                <ResponsiveContainer width="100%" minHeight={450}>
+                                    <LineChart
+                                        width={500}
+                                        height={300}
+                                        data={getData(
+                                            this.props.commit_status,
+                                            this.props.interval,
+                                            this.props.developer,
+                                            this.props.date_range
+                                        )}
+                                        margin={{
+                                            top: 5,
+                                            right: 10,
+                                            left: 10,
+                                            bottom: 5,
+                                        }}
                                     >
-                                        <Group>
-                                            <Select
-                                                label="Interval"
-                                                placeholder="Pick one"
-                                                data={[
-                                                    { value: "month", label: "Month" },
-                                                    { value: "date", label: "Date" },
-                                                ]}
-                                                value={this.props.interval}
-                                                onChange={(event) => {
-                                                    if (typeof event == "string") {
-                                                        this.props.setInterval(event);
-                                                    }
-                                                }}
-                                            />
-                                            <Select
-                                                label="Developer"
-                                                placeholder="Pick one"
-                                                data={
-                                                    this.props.git_log_stats.developer_infos
-                                                        ? Object.keys(this.props.git_log_stats.developer_infos)
-                                                        : []
-                                                }
-                                                value={this.props.developer}
-                                                onChange={(event) => {
-                                                    if (typeof event == "string") {
-                                                        this.props.setDeveloper(event);
-                                                    }
-                                                }}
-                                            />
-                                            <DatePickerInput
-                                                type="range"
-                                                label="Pick dates range"
-                                                placeholder="Pick dates range"
-                                                value={convertIntoDate(this.props.date_range)}
-                                                onChange={(event) => {
-                                                    let date_range: [number | null, number | null] = [null, null];
-
-                                                    if (event[0] !== null) {
-                                                        date_range[0] = event[0].getTime();
-                                                    } else {
-                                                        date_range[0] = null;
-                                                    }
-
-                                                    if (event[1] !== null) {
-                                                        date_range[1] = event[1].getTime();
-                                                    } else {
-                                                        date_range[1] = null;
-                                                    }
-
-                                                    this.props.setDateRange(date_range);
-                                                }}
-                                                mx="auto"
-                                            />
-                                        </Group>
-                                    </Flex>
-                                    <ResponsiveContainer width="100%" minHeight={300}>
-                                        <LineChart
-                                            width={500}
-                                            height={300}
-                                            data={getData(
-                                                this.props.commit_status,
-                                                this.props.interval,
-                                                this.props.developer,
-                                                this.props.date_range
-                                            )}
-                                            margin={{
-                                                top: 5,
-                                                right: 10,
-                                                left: 10,
-                                                bottom: 5,
+                                        <CartesianGrid strokeDasharray="5 5" />
+                                        <XAxis dataKey="title" domain={["dataMin", "dataMax"]}
+                                            label={{
+                                                value: `Dates`,
+                                                style: { textAnchor: "middle" },
+                                                angle: 0,
+                                                position: "bottom",
+                                                offset: 0,
+                                                fontFamily: "sans-serif",
+                                            }} />
+                                        <YAxis
+                                            orientation="left"
+                                            stroke="#222f3e"
+                                            label={{
+                                                value: `# commits`,
+                                                style: { textAnchor: "middle" },
+                                                angle: -90,
+                                                position: "left",
+                                                offset: 0,
+                                                fontFamily: "sans-serif",
                                             }}
-                                        >
-                                            <CartesianGrid strokeDasharray="5 5" />
-                                            <XAxis dataKey="title" domain={["dataMin", "dataMax"]} />
-                                            <YAxis
-                                                orientation="left"
-                                                stroke="#222f3e"
-                                                label={{
-                                                    value: `# commits`,
-                                                    style: { textAnchor: "middle" },
-                                                    angle: -90,
-                                                    position: "left",
-                                                    offset: 0,
-                                                    fontFamily: "sans-serif",
-                                                }}
-                                            />
-                                            <Tooltip />
-                                            <Legend />
-                                            {/* https://flatuicolors.com/palette/ca */}
-                                            <Line dataKey="num_commits" stroke="#2e86de" />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </Stack>
+                                        />
+                                        <Tooltip />
+                                        <Legend layout="horizontal" verticalAlign="top" align="center" />
+                                        {/* https://flatuicolors.com/palette/ca */}
+                                        <Line dataKey="num_commits" stroke="#2e86de" />
+                                    </LineChart>
+                                </ResponsiveContainer>
                             </Card>
                         </Tabs.Panel>
 
@@ -311,88 +325,57 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                             <Grid align="stretch" columns={12}>
                                 <Grid.Col span={12}>
                                     <Card shadow="sm" padding="lg" radius="md" withBorder>
-                                        <Stack>
-                                            <Flex
-                                                mih={50}
-                                                gap="xl"
-                                                justify="flex-end"
-                                                align="center"
-                                                direction="row"
-                                                wrap="wrap"
+
+                                        <ResponsiveContainer width="100%" minHeight={450}>
+                                            <LineChart
+                                                data={getData(
+                                                    this.props.commit_status,
+                                                    this.props.interval,
+                                                    this.props.developer,
+                                                    this.props.date_range
+                                                )}
+                                                margin={{
+                                                    top: 5,
+                                                    right: 10,
+                                                    left: 10,
+                                                    bottom: 5,
+                                                }}
                                             >
-                                                <Group>
-                                                    <Select
-                                                        label="Interval"
-                                                        placeholder="Pick one"
-                                                        data={[
-                                                            { value: "month", label: "Month" },
-                                                            { value: "date", label: "Date" },
-                                                        ]}
-                                                        value={this.props.interval}
-                                                        onChange={(event) => {
-                                                            if (typeof event == "string") {
-                                                                this.props.setInterval(event);
-                                                            }
-                                                        }}
-                                                    />
-                                                    <Select
-                                                        label="Developer"
-                                                        placeholder="Pick one"
-                                                        data={
-                                                            this.props.git_log_stats.developer_infos
-                                                                ? Object.keys(this.props.git_log_stats.developer_infos)
-                                                                : []
-                                                        }
-                                                        value={this.props.developer}
-                                                        onChange={(event) => {
-                                                            if (typeof event == "string") {
-                                                                this.props.setDeveloper(event);
-                                                            }
-                                                        }}
-                                                    />
-                                                </Group>
-                                            </Flex>
-                                            <ResponsiveContainer width="100%" minHeight={300}>
-                                                <LineChart
-                                                    data={getData(
-                                                        this.props.commit_status,
-                                                        this.props.interval,
-                                                        this.props.developer,
-                                                        this.props.date_range
-                                                    )}
-                                                    margin={{
-                                                        top: 5,
-                                                        right: 10,
-                                                        left: 10,
-                                                        bottom: 5,
+                                                <CartesianGrid strokeDasharray="5 5" />
+                                                <XAxis dataKey="title" domain={["dataMin", "dataMax"]}
+                                                    label={{
+                                                        value: `Dates`,
+                                                        style: { textAnchor: "middle" },
+                                                        angle: 0,
+                                                        position: "bottom",
+                                                        offset: 0,
+                                                        fontFamily: "sans-serif",
                                                     }}
-                                                >
-                                                    <CartesianGrid strokeDasharray="5 5" />
-                                                    <XAxis dataKey="title" domain={["dataMin", "dataMax"]} />
-                                                    <YAxis
-                                                        orientation="left"
-                                                        stroke="#222f3e"
-                                                        label={{
-                                                            value: `# lines`,
-                                                            style: { textAnchor: "middle" },
-                                                            angle: -90,
-                                                            position: "left",
-                                                            offset: 0,
-                                                            fontFamily: "sans-serif",
-                                                        }}
-                                                    />
-                                                    <Tooltip />
-                                                    <Legend />
-                                                    {/* https://flatuicolors.com/palette/ca */}
-                                                    <Line dataKey="num_deleted_lines" stroke="#ee5253" />
-                                                    <Line dataKey="num_added_lines" stroke="#10ac84" />
-                                                </LineChart>
-                                            </ResponsiveContainer>
-                                        </Stack>
+                                                />
+                                                <YAxis
+                                                    orientation="left"
+                                                    stroke="#222f3e"
+                                                    label={{
+                                                        value: `# lines`,
+                                                        style: { textAnchor: "middle" },
+                                                        angle: -90,
+                                                        position: "left",
+                                                        offset: 0,
+                                                        fontFamily: "sans-serif",
+                                                    }}
+                                                />
+                                                <Tooltip />
+                                                <Legend layout="horizontal" verticalAlign="top" align="center" />
+                                                {/* https://flatuicolors.com/palette/ca */}
+                                                <Line dataKey="num_deleted_lines" stroke="#ee5253" />
+                                                <Line dataKey="num_added_lines" stroke="#10ac84" />
+                                            </LineChart>
+                                        </ResponsiveContainer>
                                     </Card>
                                 </Grid.Col>
                             </Grid>
                         </Tabs.Panel>
+
                     </Tabs>
                 </Grid.Col>
             </Grid>
