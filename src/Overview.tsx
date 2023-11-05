@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Grid, Card, Text, Group, Stack } from '@mantine/core';
 
-import { OneCommitStatus, CommitStatus, GitLogStats, DeveloperInfos } from './struct';
+import { CommitStatus, GitLogStats, DeveloperInfos } from './struct';
 
 import {
   BarChart,
@@ -15,9 +15,13 @@ import {
   Legend
 } from 'recharts';
 
-function getData(data: CommitStatus, developers: Map<string, DeveloperInfos>): [] {
+type ResultObject = {
+  [key: string]: any;
+};
+
+function getData(data: CommitStatus, developers: Map<string, DeveloperInfos>): ResultObject[] {
   if (developers) {
-    const result = data.reduce((accumulator, currentObject) => {
+    const result = data.reduce<ResultObject[]>((accumulator, currentObject) => {
       const author = currentObject.author_name;
       const year = currentObject.year;
       const month = currentObject.month;
@@ -30,7 +34,10 @@ function getData(data: CommitStatus, developers: Map<string, DeveloperInfos>): [
           existingObject[author] += 1;
         }
       } else {
-        const newObject = { year: year, month: month, title: year.toString() + "-" + month.toString() };
+        const newObject: {
+          [key: string]: any;
+        } = { year: year, month: month, title: year.toString() + "-" + month.toString() };
+
         for (let key of Object.keys(developers)) {
           if (key === author) {
             newObject[key] = 1;

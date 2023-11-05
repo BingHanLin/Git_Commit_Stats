@@ -1,14 +1,11 @@
-import { useState, React } from "react";
+import { useState } from "react";
 
-import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
-
-import reactLogo from "./assets/react.svg";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 import {
     AppShell,
     Navbar,
     Header,
-    Footer,
     Text,
     MantineProvider,
     Button,
@@ -17,11 +14,10 @@ import {
     Flex
 } from "@mantine/core";
 
-import { createStyles, useMantineTheme } from "@mantine/styles";
+import { useMantineTheme } from "@mantine/styles";
 
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
-import { readBinaryFile } from "@tauri-apps/api/fs";
 
 import "./App.css";
 
@@ -87,7 +83,7 @@ function App() {
         console.log('free!')
     }
 
-    const views: Array<{ path: string, name: string, exact: boolean, component: React.Component }> = [
+    const views: Array<{ path: string, name: string, exact: boolean, component: React.ReactNode }> = [
         {
             path: "/",
             name: "Overview",
@@ -154,7 +150,7 @@ function App() {
                                     direction="row"
                                     wrap="wrap"
                                 >
-                                    <Button variant="default" onClick={test_state}>Test State</Button>
+                                    {/* <Button variant="default" onClick={test_state}>Test State</Button> */}
                                     <Button variant="default" onClick={import_file}>Import</Button>
                                 </Flex>
                             </Grid.Col>

@@ -1,9 +1,9 @@
 [package]
 name = "git-commit-stats"
 version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
+description = "Git Commit Stats"
+authors = ["Binghan Lin"]
+license = "MIT"
 repository = ""
 edition = "2021"
 

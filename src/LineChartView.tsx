@@ -68,12 +68,22 @@ function convertIntoDate(
     return [null, null];
 }
 
+type ResultObjectType = {
+    year: number;
+    month: number;
+    date: number;
+    title: string;
+    num_added_lines: number;
+    num_deleted_lines: number;
+    num_commits: number;
+};
+
 function getData(
     data: CommitStatus,
     interval: string,
     developer: string,
     date_range: [number | null, number | null]
-): [] {
+): ResultObjectType[] {
     const authorFilteredData = data.filter(
         (item) => item.author_name === developer
     );
@@ -94,11 +104,14 @@ function getData(
         return false;
     });
 
-    const reducedData = dateRnageFilteredData.reduce(
+
+
+    const reducedData = dateRnageFilteredData.reduce<ResultObjectType[]>(
         (accumulator, currentObject) => {
             const year = currentObject.year;
             const month = currentObject.month;
             const date = currentObject.date;
+
 
             if (interval === "month") {
                 const existingObject = accumulator.find(
@@ -108,9 +121,9 @@ function getData(
                 );
 
                 if (existingObject !== undefined) {
-                    existingObject["num_added_lines"] += currentObject.num_added_lines;
-                    existingObject["num_deleted_lines"] += currentObject.num_deleted_lines;
-                    existingObject["num_commits"] += 1;
+                    existingObject.num_added_lines += currentObject.num_added_lines;
+                    existingObject.num_deleted_lines += currentObject.num_deleted_lines;
+                    existingObject.num_commits += 1;
                 } else {
                     const newObject = {
                         year: year,

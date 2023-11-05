@@ -1,15 +1,15 @@
 import React from "react";
 
-import { Grid, Table, Card, Button, Flex, Group, Stack } from "@mantine/core";
+import { Grid, Card, Button, Stack } from "@mantine/core";
 
 import { save } from "@tauri-apps/api/dialog";
-import { writeTextFile, BaseDirectory } from "@tauri-apps/api/fs";
+import { writeTextFile } from "@tauri-apps/api/fs";
 import { stringify } from "csv-stringify/browser/esm/sync";
 
 import {
     ColumnDef,
 } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown } from "lucide-react"
 
 import { CommitStatus, OneCommitStatus } from "./struct";
 import { DataTable } from "./DataTable"
@@ -29,14 +29,19 @@ export const columns: ColumnDef<OneCommitStatus>[] = [
                 </Button>
             )
         },
+        meta: "Author"
     },
     {
         accessorKey: "author_email",
         header: "Email",
+        meta: "Email"
+
     },
     {
         accessorKey: "message",
         header: "Message",
+        meta: "Message"
+
     },
     {
         accessorKey: "time_stamp",
@@ -51,6 +56,8 @@ export const columns: ColumnDef<OneCommitStatus>[] = [
                 </Button>
             )
         },
+        meta: "Time Stamp"
+
     }
 ]
 
@@ -96,25 +103,6 @@ export default class TableView extends React.Component<ITableViewProp, {}> {
                 <Grid.Col span={12}>
                     <Card shadow="sm" padding="lg" radius="md" withBorder>
                         <Stack>
-                            <Flex
-                                mih={50}
-                                gap="xl"
-                                justify="flex-end"
-                                align="center"
-                                direction="row"
-                                wrap="wrap"
-                            >
-                                <Group>
-                                    <Button
-                                        fullWidth
-                                        variant="default"
-                                        color="#F0BBDD"
-                                        onClick={this.export_file}
-                                    >
-                                        Export CSV
-                                    </Button>
-                                </Group>
-                            </Flex>
                             <DataTable columns={columns} data={this.props.commit_status} />
                         </Stack>
                     </Card>
