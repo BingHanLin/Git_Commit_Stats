@@ -52,6 +52,10 @@ export const columns: ColumnDef<OneCommitStatus>[] = [
             )
         },
     },
+    {
+        accessorKey: "month",
+        header: "month",
+    },
 ]
 
 interface ITableViewProp {
