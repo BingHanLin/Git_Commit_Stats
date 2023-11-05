@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 
 import {
     ColumnDef,
@@ -11,20 +11,18 @@ import {
     ColumnFiltersState,
     getFilteredRowModel,
     VisibilityState,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
-import {
-    Button,
-} from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 import {
     Table,
@@ -33,15 +31,11 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-
-import { CommitStatus } from "./struct";
-
-
+} from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
 }
 
 export function DataTable<TData, TValue>({
@@ -49,30 +43,33 @@ export function DataTable<TData, TValue>({
     data,
 }: DataTableProps<TData, TValue>) {
 
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
-    )
-
+    );
     const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
+        React.useState<VisibilityState>({});
 
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+
         getPaginationRowModel: getPaginationRowModel(),
+
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
+
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
+
         onColumnVisibilityChange: setColumnVisibility,
         state: {
             sorting,
             columnFilters,
             columnVisibility,
         },
-    })
+    });
 
     return (
         <div>
@@ -94,22 +91,18 @@ export function DataTable<TData, TValue>({
                     <DropdownMenuContent align="end">
                         {table
                             .getAllColumns()
-                            .filter(
-                                (column) => column.getCanHide()
-                            )
+                            .filter((column) => column.getCanHide())
                             .map((column) => {
                                 return (
                                     <DropdownMenuCheckboxItem
                                         key={column.id}
                                         className="capitalize"
                                         checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
+                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
                                     >
                                         {column.id}
                                     </DropdownMenuCheckboxItem>
-                                )
+                                );
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -124,12 +117,9 @@ export function DataTable<TData, TValue>({
                                         <TableHead key={header.id}>
                                             {header.isPlaceholder
                                                 ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
+                                                : flexRender(header.column.columnDef.header, header.getContext())}
                                         </TableHead>
-                                    )
+                                    );
                                 })}
                             </TableRow>
                         ))}
@@ -137,10 +127,7 @@ export function DataTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -177,5 +164,5 @@ export function DataTable<TData, TValue>({
                 </Button>
             </div>
         </div>
-    )
+    );
 }
