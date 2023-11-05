@@ -9,6 +9,7 @@ import { stringify } from "csv-stringify/browser/esm/sync";
 import {
     ColumnDef,
 } from "@tanstack/react-table"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 
 import { CommitStatus, OneCommitStatus } from "./struct";
 import { DataTable } from "./DataTable"
@@ -17,7 +18,17 @@ import { DataTable } from "./DataTable"
 export const columns: ColumnDef<OneCommitStatus>[] = [
     {
         accessorKey: "author_name",
-        header: "Author",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Author
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
     {
         accessorKey: "author_email",
@@ -29,7 +40,17 @@ export const columns: ColumnDef<OneCommitStatus>[] = [
     },
     {
         accessorKey: "time_stamp",
-        header: "Time Stamp",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Time Stamp
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
 ]
 

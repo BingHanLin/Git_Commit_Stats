@@ -162,11 +162,6 @@ function App() {
                         </Grid >
                     </Header >
                 }
-                footer={
-                    < Footer height={60} p="md" >
-                        Application footer
-                    </Footer >
-                }
             >
                 <Routes>
                     {
