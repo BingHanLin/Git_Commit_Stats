@@ -112,7 +112,7 @@ function App() {
         <MantineProvider>
             <AppShell
                 styles={{
-                    main: {
+                    root: {
                         background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                     },
                 }}
@@ -140,7 +140,7 @@ function App() {
                     </Navbar>
                 }
                 header={
-                    < Header height={{ sm: 70 }} p="md" >
+                    < Header height={{ sm: 70 }} p="md" background-color="#2e86de" >
                         <Grid justify="space-between" align="center">
                             <Grid.Col span={8}>
                                 <Text>Git Commit Stats - {title}</Text>
@@ -154,8 +154,8 @@ function App() {
                                     direction="row"
                                     wrap="wrap"
                                 >
-                                    <Button onClick={test_state}>Test State</Button>
-                                    <Button onClick={import_file}>Import</Button>
+                                    <Button variant="default" onClick={test_state}>Test State</Button>
+                                    <Button variant="default" onClick={import_file}>Import</Button>
                                 </Flex>
                             </Grid.Col>
 

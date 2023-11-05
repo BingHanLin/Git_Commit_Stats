@@ -6,7 +6,32 @@ import { save } from "@tauri-apps/api/dialog";
 import { writeTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { stringify } from "csv-stringify/browser/esm/sync";
 
-import { CommitStatus } from "./struct";
+import {
+    ColumnDef,
+} from "@tanstack/react-table"
+
+import { CommitStatus, OneCommitStatus } from "./struct";
+import { DataTable } from "./DataTable"
+
+
+export const columns: ColumnDef<OneCommitStatus>[] = [
+    {
+        accessorKey: "author_name",
+        header: "Author",
+    },
+    {
+        accessorKey: "author_email",
+        header: "Email",
+    },
+    {
+        accessorKey: "message",
+        header: "Message",
+    },
+    {
+        accessorKey: "time_stamp",
+        header: "Time Stamp",
+    },
+]
 
 interface ITableViewProp {
     commit_status: CommitStatus;
@@ -85,19 +110,7 @@ export default class TableView extends React.Component<ITableViewProp, {}> {
                 </Grid.Col>
 
                 <Grid.Col span={12}>
-                    <Table highlightOnHover withColumnBorders>
-                        <thead>
-                            <tr>
-                                <th>Author</th>
-                                <th>Added Lines</th>
-                                <th>Deleted Lines</th>
-                                <th>Message</th>
-                                <th>Time Stamp</th>
-                                <th>Month</th>
-                            </tr>
-                        </thead>
-                        <tbody>{rows}</tbody>
-                    </Table>
+                    <DataTable columns={columns} data={this.props.commit_status} />
                 </Grid.Col>
             </Grid>
         );
