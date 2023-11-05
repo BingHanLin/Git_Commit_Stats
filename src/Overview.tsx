@@ -117,8 +117,8 @@ export default class Overview extends React.Component<IOverviewProp> {
               <Text fw={500}>Total Commits</Text>
             </Group>
             <Group mt="md" spacing="xs">
-              <Text size="lg" c="dimmed">
-                {this.props.git_log_stats.number_of_tatal_commits}
+              <Text size="lg">
+                {this.props.git_log_stats.number_of_tatal_commits ? this.props.git_log_stats.number_of_tatal_commits : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 commits.
@@ -132,9 +132,9 @@ export default class Overview extends React.Component<IOverviewProp> {
               <Text fw={500}>Developers</Text>
             </Group>
             <Group mt="md" spacing="xs">
-              <Text size="lg" c="dimmed">
+              <Text size="lg">
                 {this.props.git_log_stats.developer_infos ?
-                  Object.keys(this.props.git_log_stats.developer_infos).length : 0}
+                  Object.keys(this.props.git_log_stats.developer_infos).length : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 developers.
@@ -142,21 +142,30 @@ export default class Overview extends React.Component<IOverviewProp> {
             </Group>
           </Card>
         </Grid.Col>
-        <Grid.Col span={6} >
+        <Grid.Col span={3} >
           <Card shadow="sm" padding="lg" radius="md" withBorder>
             <Group mt="md" mb="xs">
-              <Text fw={500}>Additions & Deletions</Text>
+              <Text fw={500}>Additions</Text>
             </Group>
 
             <Group mt="md" spacing="xs">
-              <Text size="lg" c="dimmed">
-                {this.props.git_log_stats.number_of_tatal_additions}
+              <Text size="lg">
+                {this.props.git_log_stats.number_of_tatal_additions ? this.props.git_log_stats.number_of_tatal_additions : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 lines added,
               </Text>
-              <Text size="lg" c="dimmed">
-                {this.props.git_log_stats.number_of_tatal_deletions}
+            </Group>
+          </Card>
+        </Grid.Col>
+        <Grid.Col span={3} >
+          <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Group mt="md" mb="xs">
+              <Text fw={500}>Deletions</Text>
+            </Group>
+            <Group mt="md" spacing="xs">
+              <Text size="lg">
+                {this.props.git_log_stats.number_of_tatal_deletions ? this.props.git_log_stats.number_of_tatal_deletions : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 lines deleted.
@@ -164,7 +173,6 @@ export default class Overview extends React.Component<IOverviewProp> {
             </Group>
           </Card>
         </Grid.Col>
-
         <Grid.Col span={9} >
           <Card shadow="sm" padding="lg" radius="md" withBorder>
             <Group mt="md" mb="xs">
