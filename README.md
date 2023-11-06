@@ -13,7 +13,10 @@ https://eazybi.com/blog/analyze-and-visualize-git-log
 ## Export Git Log
 git log --numstat > filename.txt
 
+* shadcn
 https://ui.shadcn.com/
+https://www.youtube.com/watch?v=DTGRIaAJYIo
+
 https://mantine.dev/
 https://recharts.org/en-US/
 

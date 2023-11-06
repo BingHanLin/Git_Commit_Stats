@@ -95,25 +95,47 @@ pub fn open_git_log_file(file_path: &str) -> MyResult<Box<dyn BufRead>> {
 pub fn parse_git_log_file(mut file: impl BufRead) -> MyResult<Vec<CommitStatus>> {
     let mut commits_status = Vec::new();
 
-    let re = Regex::new(
+    let author_regex = Regex::new(r"Author:\s*(.*?)\s*<([^>]+)>")?;
+
+    let date_regex = Regex::new(
         r"Date:\s+((?<weekday>[A-Za-z]{3}) (?<month>[A-Za-z]{3}) (?<date>\d{1,2}) \d{2}:\d{2}:\d{2} (?<year>\d{4}) [+-]\d{4})",
     )?;
 
     let mut one_line = String::new();
     loop {
-        if one_line.len() == 0 {
-            let line_bytes = file.read_line(&mut one_line)?;
-            if is_empty_line(&one_line) || line_bytes == 0 {
+        match file.read_line(&mut one_line) {
+            Err(err) => {
+                eprintln!("read_line error: {}", err);
                 break;
             }
-        }
-
-        if one_line.to_string().starts_with("commit") {
-            let tokens: Vec<String> = one_line.split_whitespace().map(str::to_string).collect();
-            if tokens.len() == 2 {
-                let commit_hash = tokens[1].clone();
-                if let Ok(status) = parse_a_commit(commit_hash, &re, &mut one_line, &mut file) {
-                    commits_status.push(status);
+            Ok(0) => {
+                // the stream has reached EOF.
+                println!("the stream has reached EOF");
+                break;
+            }
+            Ok(_) => {
+                if one_line.to_string().starts_with("commit") {
+                    let tokens: Vec<String> =
+                        one_line.split_whitespace().map(str::to_string).collect();
+                    if tokens.len() == 2 {
+                        let commit_hash = tokens[1].clone();
+                        match parse_a_commit(
+                            &commit_hash,
+                            &author_regex,
+                            &date_regex,
+                            &mut one_line,
+                            &mut file,
+                        ) {
+                            Err(err) => {
+                                eprintln!("parse_a_commit error: {}", err);
+                                one_line.clear();
+                            }
+                            Ok(status) => {
+                                commits_status.push(status);
+                                one_line.clear();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -124,8 +146,9 @@ pub fn parse_git_log_file(mut file: impl BufRead) -> MyResult<Vec<CommitStatus>>
 
 // https://stackoverflow.com/questions/68021274/pass-mut-reference-to-a-function-and-get-it-back
 pub fn parse_a_commit(
-    commit_hash: String,
-    re: &Regex,
+    commit_hash: &String,
+    author_regex: &Regex,
+    date_regex: &Regex,
     one_line: &mut String,
     file: &mut impl BufRead,
 ) -> MyResult<CommitStatus> {
@@ -136,7 +159,7 @@ pub fn parse_a_commit(
         num_deleted_lines: 0,
         time_stamp: String::from(""),
         message: String::from(""),
-        hash: String::from(commit_hash),
+        hash: String::from(commit_hash.clone()),
         weekday: String::from(""),
         month: 0,
         date: 0,
@@ -159,16 +182,16 @@ pub fn parse_a_commit(
             one_line.clear();
 
             if empty_count == 2 {
-                bail!("Merge: Skip this commit");
+                bail!("Merge: Skip this commit {}", commit_hash);
             }
         }
     }
 
     // read author name & email
     if one_line.to_string().starts_with("Author:") {
-        let re = Regex::new(r"Author:\s*(.*?)\s*<([^>]+)>")?;
-
-        let caps = re.captures(&one_line).ok_or("Author: Regex not match")?;
+        let caps = author_regex
+            .captures(&one_line)
+            .ok_or("Author: Regex not match")?;
         let name = caps.get(1).unwrap().as_str();
         let email = caps.get(2).unwrap().as_str();
 
@@ -181,7 +204,9 @@ pub fn parse_a_commit(
     // read time stamp
     file.read_line(one_line)?;
     if one_line.to_string().starts_with("Date:") {
-        let caps = re.captures(&one_line).ok_or("Date: Regex not match")?;
+        let caps = date_regex
+            .captures(&one_line)
+            .ok_or("Date: Regex not match")?;
 
         let weekday = caps.name("weekday").unwrap().as_str();
         let month = month_name_to_number(caps.name("month").unwrap().as_str());
