@@ -3,6 +3,7 @@
 
 use serde::Serialize;
 use std::sync::Mutex;
+use std::time::Instant;
 use std::{thread, time::Duration};
 
 use git_commit_stats::{CommitStatus, GitLogStats};
@@ -18,8 +19,14 @@ async fn import_git_log_file(file_path: String) -> Result<(GitLogStats, Vec<Comm
     match git_commit_stats::open_git_log_file(&file_path.to_string()) {
         Err(err) => eprintln!("{}: {}", file_path, err),
         Ok(file) => {
+            let now1 = Instant::now();
             if let Ok(commits_status) = git_commit_stats::parse_git_log_file(file) {
+                println!("now1: {}", now1.elapsed().as_millis());
+
+                let now2 = Instant::now();
                 if let Ok(git_log_stats) = git_commit_stats::parse_commits(&commits_status) {
+                    println!("now2: {}", now2.elapsed().as_millis());
+
                     return Ok((git_log_stats, commits_status));
                 }
             }

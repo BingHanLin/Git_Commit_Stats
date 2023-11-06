@@ -95,6 +95,10 @@ pub fn open_git_log_file(file_path: &str) -> MyResult<Box<dyn BufRead>> {
 pub fn parse_git_log_file(mut file: impl BufRead) -> MyResult<Vec<CommitStatus>> {
     let mut commits_status = Vec::new();
 
+    let re = Regex::new(
+        r"Date:\s+((?<weekday>[A-Za-z]{3}) (?<month>[A-Za-z]{3}) (?<date>\d{1,2}) \d{2}:\d{2}:\d{2} (?<year>\d{4}) [+-]\d{4})",
+    )?;
+
     let mut one_line = String::new();
     loop {
         if one_line.len() == 0 {
@@ -108,7 +112,7 @@ pub fn parse_git_log_file(mut file: impl BufRead) -> MyResult<Vec<CommitStatus>>
             let tokens: Vec<String> = one_line.split_whitespace().map(str::to_string).collect();
             if tokens.len() == 2 {
                 let commit_hash = tokens[1].clone();
-                if let Ok(status) = parse_a_commit(commit_hash, &mut one_line, &mut file) {
+                if let Ok(status) = parse_a_commit(commit_hash, &re, &mut one_line, &mut file) {
                     commits_status.push(status);
                 }
             }
@@ -121,6 +125,7 @@ pub fn parse_git_log_file(mut file: impl BufRead) -> MyResult<Vec<CommitStatus>>
 // https://stackoverflow.com/questions/68021274/pass-mut-reference-to-a-function-and-get-it-back
 pub fn parse_a_commit(
     commit_hash: String,
+    re: &Regex,
     one_line: &mut String,
     file: &mut impl BufRead,
 ) -> MyResult<CommitStatus> {
@@ -176,10 +181,6 @@ pub fn parse_a_commit(
     // read time stamp
     file.read_line(one_line)?;
     if one_line.to_string().starts_with("Date:") {
-        let re = Regex::new(
-            r"Date:\s+((?<weekday>[A-Za-z]{3}) (?<month>[A-Za-z]{3}) (?<date>\d{1,2}) \d{2}:\d{2}:\d{2} (?<year>\d{4}) [+-]\d{4})",
-        )?;
-
         let caps = re.captures(&one_line).ok_or("Date: Regex not match")?;
 
         let weekday = caps.name("weekday").unwrap().as_str();
