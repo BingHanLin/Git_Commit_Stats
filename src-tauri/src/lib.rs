@@ -102,39 +102,45 @@ pub fn parse_git_log_file(mut file: impl BufRead) -> MyResult<Vec<CommitStatus>>
     )?;
 
     let mut one_line = String::new();
+    let mut read_new_line = true;
     loop {
-        match file.read_line(&mut one_line) {
-            Err(err) => {
-                eprintln!("read_line error: {}", err);
-                break;
+        if (read_new_line) {
+            one_line.clear();
+            match file.read_line(&mut one_line) {
+                Err(err) => {
+                    eprintln!("read_line error: {}", err);
+                    break;
+                }
+                Ok(0) => {
+                    // the stream has reached EOF.
+                    println!("the stream has reached EOF");
+                    break;
+                }
+                Ok(_) => {
+                    // continue reading.
+                }
             }
-            Ok(0) => {
-                // the stream has reached EOF.
-                println!("the stream has reached EOF");
-                break;
-            }
-            Ok(_) => {
-                if one_line.to_string().starts_with("commit") {
-                    let tokens: Vec<String> =
-                        one_line.split_whitespace().map(str::to_string).collect();
-                    if tokens.len() == 2 {
-                        let commit_hash = tokens[1].clone();
-                        match parse_a_commit(
-                            &commit_hash,
-                            &author_regex,
-                            &date_regex,
-                            &mut one_line,
-                            &mut file,
-                        ) {
-                            Err(err) => {
-                                eprintln!("parse_a_commit error: {}", err);
-                                one_line.clear();
-                            }
-                            Ok(status) => {
-                                commits_status.push(status);
-                                one_line.clear();
-                            }
-                        }
+        }
+
+        if one_line.to_string().starts_with("commit") {
+            let tokens: Vec<String> = one_line.split_whitespace().map(str::to_string).collect();
+            if tokens.len() == 2 {
+                let commit_hash = tokens[1].clone();
+
+                match parse_a_commit(
+                    &commit_hash,
+                    &author_regex,
+                    &date_regex,
+                    &mut one_line,
+                    &mut file,
+                ) {
+                    Err(err) => {
+                        eprintln!("parse_a_commit error: {}", err);
+                        read_new_line = true;
+                    }
+                    Ok(status) => {
+                        commits_status.push(status);
+                        read_new_line = one_line.is_empty();
                     }
                 }
             }
@@ -250,7 +256,7 @@ pub fn parse_a_commit(
             break;
         }
 
-        if one_line.to_string().starts_with("commit ") {
+        if one_line.to_string().starts_with("commit") {
             break;
         }
 
