@@ -125,7 +125,7 @@ export default class Overview extends React.Component<IOverviewProp> {
             </Group>
             <Group mt="md" spacing="xs">
               <Text size="lg">
-                {this.props.git_log_stats.number_of_tatal_commits ? this.props.git_log_stats.number_of_tatal_commits : "--"}
+                {this.props.git_log_stats.number_of_tatal_commits ? this.props.git_log_stats.number_of_tatal_commits.toLocaleString() : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 commits.
@@ -141,7 +141,7 @@ export default class Overview extends React.Component<IOverviewProp> {
             <Group mt="md" spacing="xs">
               <Text size="lg">
                 {this.props.git_log_stats.developer_infos ?
-                  Object.keys(this.props.git_log_stats.developer_infos).length : "--"}
+                  Object.keys(this.props.git_log_stats.developer_infos).length.toLocaleString() : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 developers.
@@ -157,7 +157,7 @@ export default class Overview extends React.Component<IOverviewProp> {
 
             <Group mt="md" spacing="xs">
               <Text size="lg">
-                {this.props.git_log_stats.number_of_tatal_additions ? this.props.git_log_stats.number_of_tatal_additions : "--"}
+                {this.props.git_log_stats.number_of_tatal_additions ? this.props.git_log_stats.number_of_tatal_additions.toLocaleString() : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 lines added,
@@ -172,7 +172,7 @@ export default class Overview extends React.Component<IOverviewProp> {
             </Group>
             <Group mt="md" spacing="xs">
               <Text size="lg">
-                {this.props.git_log_stats.number_of_tatal_deletions ? this.props.git_log_stats.number_of_tatal_deletions : "--"}
+                {this.props.git_log_stats.number_of_tatal_deletions ? this.props.git_log_stats.number_of_tatal_deletions.toLocaleString() : "--"}
               </Text>
               <Text size="sm" c="dimmed">
                 lines deleted.
@@ -233,7 +233,7 @@ export default class Overview extends React.Component<IOverviewProp> {
                     <Stack key={info.name} spacing="xm">
                       <Group >
                         <Text fw={500}>{info.name}</Text>
-                        <Text fw={500} c="dimmed">{info.number_of_commits} commits</Text>
+                        <Text fw={500} c="dimmed">{info.number_of_commits.toLocaleString()} commits</Text>
                       </Group>
                       <Text size="sm" c="dimmed">
                         {info.email}

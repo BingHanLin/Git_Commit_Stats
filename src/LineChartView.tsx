@@ -37,17 +37,17 @@ function convertIntoDate(
 ): [Date | null, Date | null] {
     if (date_range) {
         if (date_range[0] === null && date_range[0] === null) {
-            // let date1 = new Date();
-            // date1.setMonth(date1.getMonth() - 6);
-            // if (date_range[0] !== null) {
-            //     date1.setTime(date_range[0]);
-            // }
+            let date1 = new Date();
+            date1.setMonth(date1.getMonth() - 6);
+            if (date_range[0] !== null) {
+                date1.setTime(date_range[0]);
+            }
 
-            // let date2 = new Date();
-            // if (date_range[1] !== null) {
-            //     date2.setTime(date_range[1]);
-            // }
-            // return [date1, date2];
+            let date2 = new Date();
+            if (date_range[1] !== null) {
+                date2.setTime(date_range[1]);
+            }
+            return [date1, date2];
         }
         else {
             let date1 = null;
@@ -176,6 +176,11 @@ function getData(
     return reducedData;
 }
 
+const intervals = [
+    { value: "month", label: "Month" },
+    { value: "date", label: "Date" },
+];
+
 interface ILineChartViewProp {
     commit_status: CommitStatus;
     git_log_stats: GitLogStats;
@@ -188,6 +193,7 @@ interface ILineChartViewProp {
 }
 
 class LineChartView extends React.Component<ILineChartViewProp> {
+
     constructor(props: ILineChartViewProp) {
         super(props);
     }
@@ -196,8 +202,36 @@ class LineChartView extends React.Component<ILineChartViewProp> {
         console.log("LineChartView WILL UNMOUNT!");
     }
 
+    componentDidMount() {
+        console.log("LineChartViewcomponentDidMount!");
+    }
+
+
     componentDidUpdate(prevProps: ILineChartViewProp) {
-        console.log("componentDidUpdate!");
+        console.log("LineChartView componentDidUpdate!");
+
+        if (this.props.git_log_stats && this.props.git_log_stats.developer_infos) {
+            const developers = Array.from(Object.keys(this.props.git_log_stats.developer_infos));
+            const first_developer: string = developers.length > 0 ? developers[0] : "";
+
+            const developer: string = developers.includes(this.props.developer) ? this.props.developer : first_developer;
+            this.props.setDeveloper(developer);
+        }
+
+        if (this.props.interval.length === 0) {
+            this.props.setInterval(intervals[0].value);
+        }
+
+        if (this.props.date_range[0] === null && this.props.date_range[1] === null) {
+            let date1 = new Date();
+            date1.setMonth(date1.getMonth() - 6);
+
+            let date2 = new Date();
+
+            this.props.setDateRange([date1.getTime(), date2.getTime()]);
+        }
+
+        console.log("LineChartView componentDidUpdate!...");
     }
 
     public render() {
@@ -219,10 +253,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                     <Select
                                         label="Interval"
                                         placeholder="Pick one"
-                                        data={[
-                                            { value: "month", label: "Month" },
-                                            { value: "date", label: "Date" },
-                                        ]}
+                                        data={intervals}
                                         value={this.props.interval}
                                         onChange={(event) => {
                                             if (typeof event == "string") {
