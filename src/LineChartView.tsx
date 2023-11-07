@@ -28,6 +28,7 @@ import {
     ResponsiveContainer,
     YAxis,
     Legend,
+    ReferenceLine,
 } from "recharts";
 
 import { OneCommitStatus, CommitStatus, GitLogStats } from "./struct";
@@ -175,6 +176,49 @@ function getData(
 
     return reducedData;
 }
+
+function averageCommits(
+    data: CommitStatus,
+    interval: string,
+    developer: string,
+    date_range: [number | null, number | null]
+): number {
+    const result = getData(data, interval, developer, date_range);
+
+    const sum = result.reduce((acc, obj) => acc + obj.num_commits, 0);
+    const average = sum / result.length;
+    console.log(average);
+    return average;
+}
+
+function averageAdditions(
+    data: CommitStatus,
+    interval: string,
+    developer: string,
+    date_range: [number | null, number | null]
+): number {
+    const result = getData(data, interval, developer, date_range);
+
+    const sum = result.reduce((acc, obj) => acc + obj.num_added_lines, 0);
+    const average = sum / result.length;
+    console.log(average);
+    return average;
+}
+
+function averageDeletions(
+    data: CommitStatus,
+    interval: string,
+    developer: string,
+    date_range: [number | null, number | null]
+): number {
+    const result = getData(data, interval, developer, date_range);
+
+    const sum = result.reduce((acc, obj) => acc + obj.num_deleted_lines, 0);
+    const average = sum / result.length;
+    console.log(average);
+    return average;
+}
+
 
 const intervals = [
     { value: "month", label: "Month" },
@@ -401,6 +445,17 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                             <Legend layout="horizontal" verticalAlign="top" align="center" />
                                             {/* https://flatuicolors.com/palette/ca */}
                                             <Line dataKey="num_commits" stroke="#2e86de" />
+                                            <ReferenceLine
+                                                y={averageCommits(
+                                                    this.props.commit_status,
+                                                    this.props.interval,
+                                                    this.props.developer,
+                                                    this.props.date_range
+                                                )}
+                                                label={{ value: "", position: "right" }}
+                                                stroke="#2e86de"
+                                                strokeDasharray="4 4"
+                                            />
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </Tabs.Panel>
@@ -450,8 +505,30 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                     <Tooltip />
                                                     <Legend layout="horizontal" verticalAlign="top" align="center" />
                                                     {/* https://flatuicolors.com/palette/ca */}
-                                                    <Line dataKey="num_deleted_lines" stroke="#ee5253" />
                                                     <Line dataKey="num_added_lines" stroke="#10ac84" />
+                                                    <Line dataKey="num_deleted_lines" stroke="#ee5253" />
+                                                    <ReferenceLine
+                                                        y={averageAdditions(
+                                                            this.props.commit_status,
+                                                            this.props.interval,
+                                                            this.props.developer,
+                                                            this.props.date_range
+                                                        )}
+                                                        label={{ value: "", position: "right" }}
+                                                        stroke="#10ac84"
+                                                        strokeDasharray="4 4"
+                                                    />
+                                                    <ReferenceLine
+                                                        y={averageDeletions(
+                                                            this.props.commit_status,
+                                                            this.props.interval,
+                                                            this.props.developer,
+                                                            this.props.date_range
+                                                        )}
+                                                        label={{ value: "", position: "right" }}
+                                                        stroke="#ee5253"
+                                                        strokeDasharray="4 4"
+                                                    />
                                                 </LineChart>
                                             </ResponsiveContainer>
                                         </Grid.Col>
