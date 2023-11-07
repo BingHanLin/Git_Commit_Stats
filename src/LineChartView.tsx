@@ -192,6 +192,26 @@ interface ILineChartViewProp {
     setDateRange: (val: [number | null, number | null]) => void;
 }
 
+export const CustomizedAxisTick = ({
+    x,
+    y,
+    payload,
+    rotateAngle = -45,
+}: {
+    x?: number;
+    y?: number;
+    payload?: any;
+    rotateAngle?: number;
+}) => {
+    return (
+        <g transform={`translate(${x},${y})`}>
+            <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform={`rotate(${rotateAngle})`}>
+                {payload.value}
+            </text>
+        </g>
+    );
+};
+
 class LineChartView extends React.Component<ILineChartViewProp> {
 
     constructor(props: ILineChartViewProp) {
@@ -204,6 +224,26 @@ class LineChartView extends React.Component<ILineChartViewProp> {
 
     componentDidMount() {
         console.log("LineChartViewcomponentDidMount!");
+        if (this.props.git_log_stats && this.props.git_log_stats.developer_infos) {
+            const developers = Array.from(Object.keys(this.props.git_log_stats.developer_infos));
+            const first_developer: string = developers.length > 0 ? developers[0] : "";
+
+            const developer: string = developers.includes(this.props.developer) ? this.props.developer : first_developer;
+            this.props.setDeveloper(developer);
+        }
+
+        if (this.props.interval.length === 0) {
+            this.props.setInterval(intervals[0].value);
+        }
+
+        if (this.props.date_range[0] === null && this.props.date_range[1] === null) {
+            let date1 = new Date();
+            date1.setMonth(date1.getMonth() - 6);
+
+            let date2 = new Date();
+
+            this.props.setDateRange([date1.getTime(), date2.getTime()]);
+        }
     }
 
 
@@ -331,24 +371,25 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                 top: 20,
                                                 right: 10,
                                                 left: 10,
-                                                bottom: 20,
+                                                bottom: 60,
                                             }}
                                         >
                                             <CartesianGrid strokeDasharray="5 5" />
                                             <XAxis dataKey="title" domain={["dataMin", "dataMax"]}
+                                                tick={<CustomizedAxisTick />}
                                                 label={{
-                                                    value: `Dates`,
+                                                    value: "Dates",
                                                     style: { textAnchor: "middle" },
                                                     angle: 0,
                                                     position: "bottom",
-                                                    offset: 0,
+                                                    offset: 40,
                                                     fontFamily: "sans-serif",
                                                 }} />
                                             <YAxis
                                                 orientation="left"
                                                 stroke="#222f3e"
                                                 label={{
-                                                    value: `# commits`,
+                                                    value: "# commits",
                                                     style: { textAnchor: "middle" },
                                                     angle: -90,
                                                     position: "left",
@@ -379,17 +420,18 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                         top: 20,
                                                         right: 10,
                                                         left: 10,
-                                                        bottom: 20,
+                                                        bottom: 60,
                                                     }}
                                                 >
                                                     <CartesianGrid strokeDasharray="5 5" />
                                                     <XAxis dataKey="title" domain={["dataMin", "dataMax"]}
+                                                        tick={<CustomizedAxisTick />}
                                                         label={{
-                                                            value: `Dates`,
+                                                            value: "Dates",
                                                             style: { textAnchor: "middle" },
                                                             angle: 0,
                                                             position: "bottom",
-                                                            offset: 0,
+                                                            offset: 40,
                                                             fontFamily: "sans-serif",
                                                         }}
                                                     />
@@ -397,7 +439,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                         orientation="left"
                                                         stroke="#222f3e"
                                                         label={{
-                                                            value: `# lines`,
+                                                            value: "# lines",
                                                             style: { textAnchor: "middle" },
                                                             angle: -90,
                                                             position: "left",
