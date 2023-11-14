@@ -11,7 +11,7 @@ https://eazybi.com/blog/analyze-and-visualize-git-log
 
 
 ## Export Git Log
-git log --numstat > filename.txt
+git log --numstat -no-merges > filename.txt
 
 * shadcn
 https://ui.shadcn.com/
