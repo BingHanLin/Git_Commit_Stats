@@ -4,14 +4,7 @@ import { save } from "@tauri-apps/api/dialog";
 import { writeTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { stringify } from "csv-stringify/browser/esm/sync";
 
-import {
-    Text,
-    Grid,
-    Flex,
-    Card,
-    Group,
-    Stack,
-} from "@mantine/core";
+import { Text, Grid, Flex, Card, Group, Stack } from "@mantine/core";
 
 import {
     ColumnDef,
@@ -46,8 +39,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-
-
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
@@ -57,11 +48,9 @@ export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
-
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    );
+    const [columnFilters, setColumnFilters] =
+        React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({});
 
@@ -95,7 +84,7 @@ export function DataTable<TData, TValue>({
         let data: {}[] = [];
         for (let row of table.getFilteredRowModel().rows) {
             let object: {
-                [key: string]: string
+                [key: string]: string;
             } = {};
             for (let column of table.getVisibleFlatColumns()) {
                 object[column.id] = row.getValue(column.id);
@@ -125,7 +114,6 @@ export function DataTable<TData, TValue>({
         } catch (err) {
             console.error(err);
         }
-
     };
 
     return (
@@ -144,9 +132,15 @@ export function DataTable<TData, TValue>({
                             {/* <Group> */}
                             <Input
                                 placeholder="Filter authors..."
-                                value={(table.getColumn("author_name")?.getFilterValue() as string) ?? ""}
+                                value={
+                                    (table
+                                        .getColumn("author_name")
+                                        ?.getFilterValue() as string) ?? ""
+                                }
                                 onChange={(event) =>
-                                    table.getColumn("author_name")?.setFilterValue(event.target.value)
+                                    table
+                                        .getColumn("author_name")
+                                        ?.setFilterValue(event.target.value)
                                 }
                                 className="max-w-sm"
                             />
@@ -160,21 +154,32 @@ export function DataTable<TData, TValue>({
                             >
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" className="ml-auto">
+                                        <Button
+                                            variant="outline"
+                                            className="ml-auto"
+                                        >
                                             Visible Columns
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         {table
                                             .getAllColumns()
-                                            .filter((column) => column.getCanHide())
+                                            .filter((column) =>
+                                                column.getCanHide()
+                                            )
                                             .map((column) => {
                                                 return (
                                                     <DropdownMenuCheckboxItem
                                                         key={column.id}
                                                         className="capitalize"
                                                         checked={column.getIsVisible()}
-                                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                                        onCheckedChange={(
+                                                            value
+                                                        ) =>
+                                                            column.toggleVisibility(
+                                                                !!value
+                                                            )
+                                                        }
                                                     >
                                                         {column.id}
                                                     </DropdownMenuCheckboxItem>
@@ -184,7 +189,6 @@ export function DataTable<TData, TValue>({
                                 </DropdownMenu>
                             </Flex>
                             {/* </Group> */}
-
                         </Flex>
                     </Grid.Col>
                     <Grid.Col span={2}>
@@ -205,41 +209,70 @@ export function DataTable<TData, TValue>({
                                 Export
                             </Button>
                         </Flex>
-
                     </Grid.Col>
 
                     <Grid.Col span={12}>
                         <div className="rounded-md border">
                             <Table>
                                 <TableHeader>
-                                    {table.getHeaderGroups().map((headerGroup) => (
-                                        <TableRow key={headerGroup.id}>
-                                            {headerGroup.headers.map((header) => {
-                                                return (
-                                                    <TableHead key={header.id}>
-                                                        {header.isPlaceholder
-                                                            ? null
-                                                            : flexRender(header.column.columnDef.header, header.getContext())}
-                                                    </TableHead>
-                                                );
-                                            })}
-                                        </TableRow>
-                                    ))}
+                                    {table
+                                        .getHeaderGroups()
+                                        .map((headerGroup) => (
+                                            <TableRow key={headerGroup.id}>
+                                                {headerGroup.headers.map(
+                                                    (header) => {
+                                                        return (
+                                                            <TableHead
+                                                                key={header.id}
+                                                            >
+                                                                {header.isPlaceholder
+                                                                    ? null
+                                                                    : flexRender(
+                                                                          header
+                                                                              .column
+                                                                              .columnDef
+                                                                              .header,
+                                                                          header.getContext()
+                                                                      )}
+                                                            </TableHead>
+                                                        );
+                                                    }
+                                                )}
+                                            </TableRow>
+                                        ))}
                                 </TableHeader>
                                 <TableBody>
                                     {table.getRowModel().rows?.length ? (
                                         table.getRowModel().rows.map((row) => (
-                                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                                                {row.getVisibleCells().map((cell) => (
-                                                    <TableCell key={cell.id}>
-                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                    </TableCell>
-                                                ))}
+                                            <TableRow
+                                                key={row.id}
+                                                data-state={
+                                                    row.getIsSelected() &&
+                                                    "selected"
+                                                }
+                                            >
+                                                {row
+                                                    .getVisibleCells()
+                                                    .map((cell) => (
+                                                        <TableCell
+                                                            key={cell.id}
+                                                        >
+                                                            {flexRender(
+                                                                cell.column
+                                                                    .columnDef
+                                                                    .cell,
+                                                                cell.getContext()
+                                                            )}
+                                                        </TableCell>
+                                                    ))}
                                             </TableRow>
                                         ))
                                     ) : (
                                         <TableRow>
-                                            <TableCell colSpan={columns.length} className="h-24 text-center">
+                                            <TableCell
+                                                colSpan={columns.length}
+                                                className="h-24 text-center"
+                                            >
                                                 No results.
                                             </TableCell>
                                         </TableRow>
@@ -268,7 +301,6 @@ export function DataTable<TData, TValue>({
                     </Grid.Col>
                 </Grid>
             </Grid.Col>
-        </Grid >
-
+        </Grid>
     );
 }

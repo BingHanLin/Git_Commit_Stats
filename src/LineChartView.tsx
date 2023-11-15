@@ -49,8 +49,7 @@ function convertIntoDate(
                 date2.setTime(date_range[1]);
             }
             return [date1, date2];
-        }
-        else {
+        } else {
             let date1 = null;
             if (date_range[0] !== null) {
                 date1 = new Date();
@@ -91,7 +90,11 @@ function getData(
 
     const dateRnageFilteredData = authorFilteredData.filter((item) => {
         // January is month 0. December is month 11.
-        const item_date = new Date(item.year, item.month - 1, item.date).getTime();
+        const item_date = new Date(
+            item.year,
+            item.month - 1,
+            item.date
+        ).getTime();
 
         if (date_range) {
             if (date_range[0] !== null && date_range[1] !== null) {
@@ -105,14 +108,11 @@ function getData(
         return false;
     });
 
-
-
     const reducedData = dateRnageFilteredData.reduce<ResultObjectType[]>(
         (accumulator, currentObject) => {
             const year = currentObject.year;
             const month = currentObject.month;
             const date = currentObject.date;
-
 
             if (interval === "month") {
                 const existingObject = accumulator.find(
@@ -122,8 +122,10 @@ function getData(
                 );
 
                 if (existingObject !== undefined) {
-                    existingObject.num_added_lines += currentObject.num_added_lines;
-                    existingObject.num_deleted_lines += currentObject.num_deleted_lines;
+                    existingObject.num_added_lines +=
+                        currentObject.num_added_lines;
+                    existingObject.num_deleted_lines +=
+                        currentObject.num_deleted_lines;
                     existingObject.num_commits += 1;
                 } else {
                     const newObject = {
@@ -146,15 +148,22 @@ function getData(
                 );
 
                 if (existingObject !== undefined) {
-                    existingObject["num_added_lines"] += currentObject.num_added_lines;
-                    existingObject["num_deleted_lines"] += currentObject.num_deleted_lines;
+                    existingObject["num_added_lines"] +=
+                        currentObject.num_added_lines;
+                    existingObject["num_deleted_lines"] +=
+                        currentObject.num_deleted_lines;
                     existingObject["num_commits"] += 1;
                 } else {
                     const newObject = {
                         year: year,
                         month: month,
                         date: date,
-                        title: year.toString() + "-" + month.toString() + "-" + date.toString(),
+                        title:
+                            year.toString() +
+                            "-" +
+                            month.toString() +
+                            "-" +
+                            date.toString(),
                         num_added_lines: currentObject.num_added_lines,
                         num_deleted_lines: currentObject.num_deleted_lines,
                         num_commits: 1,
@@ -219,7 +228,6 @@ function averageDeletions(
     return average;
 }
 
-
 const intervals = [
     { value: "month", label: "Month" },
     { value: "date", label: "Date" },
@@ -249,7 +257,14 @@ export const CustomizedAxisTick = ({
 }) => {
     return (
         <g transform={`translate(${x},${y})`}>
-            <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform={`rotate(${rotateAngle})`}>
+            <text
+                x={0}
+                y={0}
+                dy={16}
+                textAnchor="end"
+                fill="#666"
+                transform={`rotate(${rotateAngle})`}
+            >
                 {payload.value}
             </text>
         </g>
@@ -257,7 +272,6 @@ export const CustomizedAxisTick = ({
 };
 
 class LineChartView extends React.Component<ILineChartViewProp> {
-
     constructor(props: ILineChartViewProp) {
         super(props);
     }
@@ -268,11 +282,19 @@ class LineChartView extends React.Component<ILineChartViewProp> {
 
     componentDidMount() {
         console.log("LineChartViewcomponentDidMount!");
-        if (this.props.git_log_stats && this.props.git_log_stats.developer_infos) {
-            const developers = Array.from(Object.keys(this.props.git_log_stats.developer_infos));
-            const first_developer: string = developers.length > 0 ? developers[0] : "";
+        if (
+            this.props.git_log_stats &&
+            this.props.git_log_stats.developer_infos
+        ) {
+            const developers = Array.from(
+                Object.keys(this.props.git_log_stats.developer_infos)
+            );
+            const first_developer: string =
+                developers.length > 0 ? developers[0] : "";
 
-            const developer: string = developers.includes(this.props.developer) ? this.props.developer : first_developer;
+            const developer: string = developers.includes(this.props.developer)
+                ? this.props.developer
+                : first_developer;
             this.props.setDeveloper(developer);
         }
 
@@ -280,7 +302,10 @@ class LineChartView extends React.Component<ILineChartViewProp> {
             this.props.setInterval(intervals[0].value);
         }
 
-        if (this.props.date_range[0] === null && this.props.date_range[1] === null) {
+        if (
+            this.props.date_range[0] === null &&
+            this.props.date_range[1] === null
+        ) {
             let date1 = new Date();
             date1.setMonth(date1.getMonth() - 6);
 
@@ -290,15 +315,22 @@ class LineChartView extends React.Component<ILineChartViewProp> {
         }
     }
 
-
     componentDidUpdate(prevProps: ILineChartViewProp) {
         console.log("LineChartView componentDidUpdate!");
 
-        if (this.props.git_log_stats && this.props.git_log_stats.developer_infos) {
-            const developers = Array.from(Object.keys(this.props.git_log_stats.developer_infos));
-            const first_developer: string = developers.length > 0 ? developers[0] : "";
+        if (
+            this.props.git_log_stats &&
+            this.props.git_log_stats.developer_infos
+        ) {
+            const developers = Array.from(
+                Object.keys(this.props.git_log_stats.developer_infos)
+            );
+            const first_developer: string =
+                developers.length > 0 ? developers[0] : "";
 
-            const developer: string = developers.includes(this.props.developer) ? this.props.developer : first_developer;
+            const developer: string = developers.includes(this.props.developer)
+                ? this.props.developer
+                : first_developer;
             this.props.setDeveloper(developer);
         }
 
@@ -306,7 +338,10 @@ class LineChartView extends React.Component<ILineChartViewProp> {
             this.props.setInterval(intervals[0].value);
         }
 
-        if (this.props.date_range[0] === null && this.props.date_range[1] === null) {
+        if (
+            this.props.date_range[0] === null &&
+            this.props.date_range[1] === null
+        ) {
             let date1 = new Date();
             date1.setMonth(date1.getMonth() - 6);
 
@@ -324,7 +359,6 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                 <Grid.Col span={12}>
                     <Card shadow="sm" padding="lg" radius="md" withBorder>
                         <Stack>
-
                             <Flex
                                 mih={50}
                                 gap="xl"
@@ -349,8 +383,12 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                         label="Developer"
                                         placeholder="Pick one"
                                         data={
-                                            this.props.git_log_stats.developer_infos
-                                                ? Object.keys(this.props.git_log_stats.developer_infos)
+                                            this.props.git_log_stats
+                                                .developer_infos
+                                                ? Object.keys(
+                                                      this.props.git_log_stats
+                                                          .developer_infos
+                                                  )
                                                 : []
                                         }
                                         value={this.props.developer}
@@ -363,24 +401,31 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                     <DatePickerInput
                                         styles={{
                                             wrapper: {
-                                                background: 'white',
+                                                background: "white",
                                             },
                                         }}
                                         type="range"
                                         label="Pick dates range"
                                         placeholder="Pick dates range"
-                                        value={convertIntoDate(this.props.date_range)}
+                                        value={convertIntoDate(
+                                            this.props.date_range
+                                        )}
                                         onChange={(event) => {
-                                            let date_range: [number | null, number | null] = [null, null];
+                                            let date_range: [
+                                                number | null,
+                                                number | null
+                                            ] = [null, null];
 
                                             if (event[0] !== null) {
-                                                date_range[0] = event[0].getTime();
+                                                date_range[0] =
+                                                    event[0].getTime();
                                             } else {
                                                 date_range[0] = null;
                                             }
 
                                             if (event[1] !== null) {
-                                                date_range[1] = event[1].getTime();
+                                                date_range[1] =
+                                                    event[1].getTime();
                                             } else {
                                                 date_range[1] = null;
                                             }
@@ -394,14 +439,19 @@ class LineChartView extends React.Component<ILineChartViewProp> {
 
                             <Tabs defaultValue="commits">
                                 <Tabs.List>
-                                    <Tabs.Tab value="commits">Commits Graph</Tabs.Tab>
+                                    <Tabs.Tab value="commits">
+                                        Commits Graph
+                                    </Tabs.Tab>
                                     <Tabs.Tab value="additions&deletions">
                                         Additions & Deletions Graph
                                     </Tabs.Tab>
                                 </Tabs.List>
 
                                 <Tabs.Panel value="commits" pt="xs">
-                                    <ResponsiveContainer width="100%" minHeight={450}>
+                                    <ResponsiveContainer
+                                        width="100%"
+                                        minHeight={450}
+                                    >
                                         <LineChart
                                             width={500}
                                             height={300}
@@ -419,22 +469,29 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                             }}
                                         >
                                             <CartesianGrid strokeDasharray="5 5" />
-                                            <XAxis dataKey="title" domain={["dataMin", "dataMax"]}
+                                            <XAxis
+                                                dataKey="title"
+                                                domain={["dataMin", "dataMax"]}
                                                 tick={<CustomizedAxisTick />}
                                                 label={{
                                                     value: "Dates",
-                                                    style: { textAnchor: "middle" },
+                                                    style: {
+                                                        textAnchor: "middle",
+                                                    },
                                                     angle: 0,
                                                     position: "bottom",
                                                     offset: 40,
                                                     fontFamily: "sans-serif",
-                                                }} />
+                                                }}
+                                            />
                                             <YAxis
                                                 orientation="left"
                                                 stroke="#222f3e"
                                                 label={{
                                                     value: "# commits",
-                                                    style: { textAnchor: "middle" },
+                                                    style: {
+                                                        textAnchor: "middle",
+                                                    },
                                                     angle: -90,
                                                     position: "left",
                                                     offset: 0,
@@ -442,9 +499,16 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                 }}
                                             />
                                             <Tooltip />
-                                            <Legend layout="horizontal" verticalAlign="top" align="center" />
+                                            <Legend
+                                                layout="horizontal"
+                                                verticalAlign="top"
+                                                align="center"
+                                            />
                                             {/* https://flatuicolors.com/palette/ca */}
-                                            <Line dataKey="num_commits" stroke="#2e86de" />
+                                            <Line
+                                                dataKey="num_commits"
+                                                stroke="#2e86de"
+                                            />
                                             <ReferenceLine
                                                 y={averageCommits(
                                                     this.props.commit_status,
@@ -452,7 +516,10 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                     this.props.developer,
                                                     this.props.date_range
                                                 )}
-                                                label={{ value: "", position: "right" }}
+                                                label={{
+                                                    value: "",
+                                                    position: "right",
+                                                }}
                                                 stroke="#2e86de"
                                                 strokeDasharray="4 4"
                                             />
@@ -463,10 +530,14 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                 <Tabs.Panel value="additions&deletions" pt="xs">
                                     <Grid align="stretch" columns={12}>
                                         <Grid.Col span={12}>
-                                            <ResponsiveContainer width="100%" minHeight={450}>
+                                            <ResponsiveContainer
+                                                width="100%"
+                                                minHeight={450}
+                                            >
                                                 <LineChart
                                                     data={getData(
-                                                        this.props.commit_status,
+                                                        this.props
+                                                            .commit_status,
                                                         this.props.interval,
                                                         this.props.developer,
                                                         this.props.date_range
@@ -479,15 +550,26 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                     }}
                                                 >
                                                     <CartesianGrid strokeDasharray="5 5" />
-                                                    <XAxis dataKey="title" domain={["dataMin", "dataMax"]}
-                                                        tick={<CustomizedAxisTick />}
+                                                    <XAxis
+                                                        dataKey="title"
+                                                        domain={[
+                                                            "dataMin",
+                                                            "dataMax",
+                                                        ]}
+                                                        tick={
+                                                            <CustomizedAxisTick />
+                                                        }
                                                         label={{
                                                             value: "Dates",
-                                                            style: { textAnchor: "middle" },
+                                                            style: {
+                                                                textAnchor:
+                                                                    "middle",
+                                                            },
                                                             angle: 0,
                                                             position: "bottom",
                                                             offset: 40,
-                                                            fontFamily: "sans-serif",
+                                                            fontFamily:
+                                                                "sans-serif",
                                                         }}
                                                     />
                                                     <YAxis
@@ -495,37 +577,63 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                         stroke="#222f3e"
                                                         label={{
                                                             value: "# lines",
-                                                            style: { textAnchor: "middle" },
+                                                            style: {
+                                                                textAnchor:
+                                                                    "middle",
+                                                            },
                                                             angle: -90,
                                                             position: "left",
                                                             offset: 0,
-                                                            fontFamily: "sans-serif",
+                                                            fontFamily:
+                                                                "sans-serif",
                                                         }}
                                                     />
                                                     <Tooltip />
-                                                    <Legend layout="horizontal" verticalAlign="top" align="center" />
+                                                    <Legend
+                                                        layout="horizontal"
+                                                        verticalAlign="top"
+                                                        align="center"
+                                                    />
                                                     {/* https://flatuicolors.com/palette/ca */}
-                                                    <Line dataKey="num_added_lines" stroke="#10ac84" />
-                                                    <Line dataKey="num_deleted_lines" stroke="#ee5253" />
+                                                    <Line
+                                                        dataKey="num_added_lines"
+                                                        stroke="#10ac84"
+                                                    />
+                                                    <Line
+                                                        dataKey="num_deleted_lines"
+                                                        stroke="#ee5253"
+                                                    />
                                                     <ReferenceLine
                                                         y={averageAdditions(
-                                                            this.props.commit_status,
+                                                            this.props
+                                                                .commit_status,
                                                             this.props.interval,
-                                                            this.props.developer,
-                                                            this.props.date_range
+                                                            this.props
+                                                                .developer,
+                                                            this.props
+                                                                .date_range
                                                         )}
-                                                        label={{ value: "", position: "right" }}
+                                                        label={{
+                                                            value: "",
+                                                            position: "right",
+                                                        }}
                                                         stroke="#10ac84"
                                                         strokeDasharray="4 4"
                                                     />
                                                     <ReferenceLine
                                                         y={averageDeletions(
-                                                            this.props.commit_status,
+                                                            this.props
+                                                                .commit_status,
                                                             this.props.interval,
-                                                            this.props.developer,
-                                                            this.props.date_range
+                                                            this.props
+                                                                .developer,
+                                                            this.props
+                                                                .date_range
                                                         )}
-                                                        label={{ value: "", position: "right" }}
+                                                        label={{
+                                                            value: "",
+                                                            position: "right",
+                                                        }}
                                                         stroke="#ee5253"
                                                         strokeDasharray="4 4"
                                                     />
@@ -534,13 +642,11 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                         </Grid.Col>
                                     </Grid>
                                 </Tabs.Panel>
-
                             </Tabs>
-
                         </Stack>
                     </Card>
                 </Grid.Col>
-            </Grid >
+            </Grid>
         );
     }
 }
