@@ -7,17 +7,12 @@ import { setInterval, setDeveloper, setDateRange } from "./slice";
 import type { RootState } from "./store";
 import { connect } from "react-redux";
 
-import {
-    Tabs,
-    Text,
-    Grid,
-    Select,
-    Flex,
-    Card,
-    Group,
-    Stack,
-} from "@mantine/core";
-import { DatePickerInput, DatesRangeValue } from "@mantine/dates";
+import { DateRange } from "react-day-picker";
+
+import { Combobox } from "./dashboard/components/combobox";
+import { CalendarDateRangePicker } from "./dashboard/components/date-range-picker";
+
+import { Tabs, Grid, Flex, Card, Group, Stack } from "@mantine/core";
 
 import {
     LineChart,
@@ -33,9 +28,9 @@ import {
 
 import { OneCommitStatus, CommitStatus, GitLogStats } from "./struct";
 
-function convertIntoDate(
+function convertIntoDateRange(
     date_range: [number | null, number | null]
-): [Date | null, Date | null] {
+): DateRange {
     if (date_range) {
         if (date_range[0] === null && date_range[0] === null) {
             let date1 = new Date();
@@ -48,24 +43,24 @@ function convertIntoDate(
             if (date_range[1] !== null) {
                 date2.setTime(date_range[1]);
             }
-            return [date1, date2];
+            return { from: date1, to: date2 };
         } else {
-            let date1 = null;
+            let date1 = undefined;
             if (date_range[0] !== null) {
                 date1 = new Date();
                 date1.setTime(date_range[0]);
             }
 
-            let date2 = null;
+            let date2 = undefined;
             if (date_range[1] !== null) {
                 date2 = new Date();
                 date2.setTime(date_range[1]);
             }
-            return [date1, date2];
+            return { from: date1, to: date2 };
         }
     }
 
-    return [null, null];
+    return { from: undefined, to: undefined };
 }
 
 type ResultObjectType = {
@@ -194,9 +189,12 @@ function averageCommits(
 ): number {
     const result = getData(data, interval, developer, date_range);
 
+    if (result.length == 0) {
+        return 0.0;
+    }
+
     const sum = result.reduce((acc, obj) => acc + obj.num_commits, 0);
     const average = sum / result.length;
-    console.log(average);
     return average;
 }
 
@@ -208,9 +206,12 @@ function averageAdditions(
 ): number {
     const result = getData(data, interval, developer, date_range);
 
+    if (result.length == 0) {
+        return 0.0;
+    }
+
     const sum = result.reduce((acc, obj) => acc + obj.num_added_lines, 0);
     const average = sum / result.length;
-    console.log(average);
     return average;
 }
 
@@ -222,9 +223,12 @@ function averageDeletions(
 ): number {
     const result = getData(data, interval, developer, date_range);
 
+    if (result.length == 0) {
+        return 0.0;
+    }
+
     const sum = result.reduce((acc, obj) => acc + obj.num_deleted_lines, 0);
     const average = sum / result.length;
-    console.log(average);
     return average;
 }
 
@@ -331,6 +335,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
             const developer: string = developers.includes(this.props.developer)
                 ? this.props.developer
                 : first_developer;
+
             this.props.setDeveloper(developer);
         }
 
@@ -368,72 +373,73 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                 wrap="wrap"
                             >
                                 <Group>
-                                    <Select
-                                        label="Interval"
-                                        placeholder="Pick one"
-                                        data={intervals}
+                                    <Combobox
                                         value={this.props.interval}
-                                        onChange={(event) => {
-                                            if (typeof event == "string") {
-                                                this.props.setInterval(event);
-                                            }
+                                        data={intervals}
+                                        placeholder="Select Interval"
+                                        onSelected={(interval: string) => {
+                                            this.props.setInterval(interval);
                                         }}
-                                    />
-                                    <Select
-                                        label="Developer"
-                                        placeholder="Pick one"
+                                    ></Combobox>
+                                    <Combobox
+                                        value={this.props.developer}
                                         data={
                                             this.props.git_log_stats
                                                 .developer_infos
                                                 ? Object.keys(
                                                       this.props.git_log_stats
                                                           .developer_infos
-                                                  )
+                                                  ).map((e) => {
+                                                      return {
+                                                          value: e,
+                                                          label: e,
+                                                      };
+                                                  })
                                                 : []
                                         }
-                                        value={this.props.developer}
-                                        onChange={(event) => {
-                                            if (typeof event == "string") {
-                                                this.props.setDeveloper(event);
-                                            }
+                                        placeholder="Select Developer"
+                                        onSelected={(developer: string) => {
+                                            this.props.setDeveloper(developer);
                                         }}
-                                    />
-                                    <DatePickerInput
-                                        styles={{
-                                            wrapper: {
-                                                background: "white",
-                                            },
-                                        }}
-                                        type="range"
-                                        label="Pick dates range"
-                                        placeholder="Pick dates range"
-                                        value={convertIntoDate(
+                                    ></Combobox>
+                                    <CalendarDateRangePicker
+                                        value={convertIntoDateRange(
                                             this.props.date_range
                                         )}
-                                        onChange={(event) => {
-                                            let date_range: [
-                                                number | null,
-                                                number | null
-                                            ] = [null, null];
+                                        onSelected={(
+                                            data_range: DateRange | undefined
+                                        ) => {
+                                            if (data_range) {
+                                                let number_date_range: [
+                                                    number | null,
+                                                    number | null
+                                                ] = [null, null];
 
-                                            if (event[0] !== null) {
-                                                date_range[0] =
-                                                    event[0].getTime();
-                                            } else {
-                                                date_range[0] = null;
+                                                if (
+                                                    data_range.from !==
+                                                    undefined
+                                                ) {
+                                                    number_date_range[0] =
+                                                        data_range.from.getTime();
+                                                } else {
+                                                    number_date_range[0] = null;
+                                                }
+
+                                                if (
+                                                    data_range.to !== undefined
+                                                ) {
+                                                    number_date_range[1] =
+                                                        data_range.to.getTime();
+                                                } else {
+                                                    number_date_range[1] = null;
+                                                }
+
+                                                this.props.setDateRange(
+                                                    number_date_range
+                                                );
                                             }
-
-                                            if (event[1] !== null) {
-                                                date_range[1] =
-                                                    event[1].getTime();
-                                            } else {
-                                                date_range[1] = null;
-                                            }
-
-                                            this.props.setDateRange(date_range);
                                         }}
-                                        mx="auto"
-                                    />
+                                    ></CalendarDateRangePicker>
                                 </Group>
                             </Flex>
 
