@@ -4,8 +4,6 @@ import { save } from "@tauri-apps/api/dialog";
 import { writeTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { stringify } from "csv-stringify/browser/esm/sync";
 
-import { Text, Grid, Flex, Card, Group, Stack } from "@mantine/core";
-
 import {
     ColumnDef,
     flexRender,
@@ -117,19 +115,11 @@ export function DataTable<TData, TValue>({
     };
 
     return (
-        <Grid align="stretch" columns={12}>
-            <Grid.Col span={12}>
-                <Grid align="stretch" columns={12}>
-                    <Grid.Col span={10}>
-                        <Flex
-                            mih={50}
-                            gap="xl"
-                            justify="flex-start"
-                            align="center"
-                            direction="row"
-                            wrap="wrap"
-                        >
-                            {/* <Group> */}
+        <>
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-start-1 col-end-13">
+                    <div className="flex justify-between space-x-2">
+                        <div className="flex  space-x-2">
                             <Input
                                 placeholder="Filter authors..."
                                 value={
@@ -144,163 +134,129 @@ export function DataTable<TData, TValue>({
                                 }
                                 className="max-w-sm"
                             />
-                            <Flex
-                                mih={50}
-                                gap="xl"
-                                justify="flex-start"
-                                align="center"
-                                direction="row"
-                                wrap="wrap"
-                            >
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            className="ml-auto"
-                                        >
-                                            Visible Columns
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        {table
-                                            .getAllColumns()
-                                            .filter((column) =>
-                                                column.getCanHide()
-                                            )
-                                            .map((column) => {
-                                                return (
-                                                    <DropdownMenuCheckboxItem
-                                                        key={column.id}
-                                                        className="capitalize"
-                                                        checked={column.getIsVisible()}
-                                                        onCheckedChange={(
-                                                            value
-                                                        ) =>
-                                                            column.toggleVisibility(
-                                                                !!value
-                                                            )
-                                                        }
-                                                    >
-                                                        {column.id}
-                                                    </DropdownMenuCheckboxItem>
-                                                );
-                                            })}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </Flex>
-                            {/* </Group> */}
-                        </Flex>
-                    </Grid.Col>
-                    <Grid.Col span={2}>
-                        <Flex
-                            mih={50}
-                            gap="xl"
-                            justify="flex-start"
-                            align="center"
-                            direction="row"
-                            wrap="wrap"
-                        >
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="ml-auto"
+                                    >
+                                        Columns
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    {table
+                                        .getAllColumns()
+                                        .filter((column) => column.getCanHide())
+                                        .map((column) => {
+                                            return (
+                                                <DropdownMenuCheckboxItem
+                                                    key={column.id}
+                                                    className="capitalize"
+                                                    checked={column.getIsVisible()}
+                                                    onCheckedChange={(value) =>
+                                                        column.toggleVisibility(
+                                                            !!value
+                                                        )
+                                                    }
+                                                >
+                                                    {column.id}
+                                                </DropdownMenuCheckboxItem>
+                                            );
+                                        })}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                        <div className="col-end-13 col-span-2">
                             <Button
                                 variant="outline"
-                                size="sm"
                                 onClick={exportClicked}
                                 disabled={table.getRowModel().rows.length == 0}
                             >
                                 Export
                             </Button>
-                        </Flex>
-                    </Grid.Col>
-
-                    <Grid.Col span={12}>
-                        <div className="rounded-md border">
-                            <Table>
-                                <TableHeader>
-                                    {table
-                                        .getHeaderGroups()
-                                        .map((headerGroup) => (
-                                            <TableRow key={headerGroup.id}>
-                                                {headerGroup.headers.map(
-                                                    (header) => {
-                                                        return (
-                                                            <TableHead
-                                                                key={header.id}
-                                                            >
-                                                                {header.isPlaceholder
-                                                                    ? null
-                                                                    : flexRender(
-                                                                          header
-                                                                              .column
-                                                                              .columnDef
-                                                                              .header,
-                                                                          header.getContext()
-                                                                      )}
-                                                            </TableHead>
-                                                        );
-                                                    }
-                                                )}
-                                            </TableRow>
-                                        ))}
-                                </TableHeader>
-                                <TableBody>
-                                    {table.getRowModel().rows?.length ? (
-                                        table.getRowModel().rows.map((row) => (
-                                            <TableRow
-                                                key={row.id}
-                                                data-state={
-                                                    row.getIsSelected() &&
-                                                    "selected"
-                                                }
-                                            >
-                                                {row
-                                                    .getVisibleCells()
-                                                    .map((cell) => (
-                                                        <TableCell
-                                                            key={cell.id}
-                                                        >
-                                                            {flexRender(
-                                                                cell.column
-                                                                    .columnDef
-                                                                    .cell,
-                                                                cell.getContext()
-                                                            )}
-                                                        </TableCell>
-                                                    ))}
-                                            </TableRow>
-                                        ))
-                                    ) : (
-                                        <TableRow>
-                                            <TableCell
-                                                colSpan={columns.length}
-                                                className="h-24 text-center"
-                                            >
-                                                No results.
-                                            </TableCell>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-start-1 col-end-13">
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
+                                {table.getHeaderGroups().map((headerGroup) => (
+                                    <TableRow key={headerGroup.id}>
+                                        {headerGroup.headers.map((header) => {
+                                            return (
+                                                <TableHead key={header.id}>
+                                                    {header.isPlaceholder
+                                                        ? null
+                                                        : flexRender(
+                                                              header.column
+                                                                  .columnDef
+                                                                  .header,
+                                                              header.getContext()
+                                                          )}
+                                                </TableHead>
+                                            );
+                                        })}
+                                    </TableRow>
+                                ))}
+                            </TableHeader>
+                            <TableBody>
+                                {table.getRowModel().rows?.length ? (
+                                    table.getRowModel().rows.map((row) => (
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={
+                                                row.getIsSelected() &&
+                                                "selected"
+                                            }
+                                        >
+                                            {row
+                                                .getVisibleCells()
+                                                .map((cell) => (
+                                                    <TableCell key={cell.id}>
+                                                        {flexRender(
+                                                            cell.column
+                                                                .columnDef.cell,
+                                                            cell.getContext()
+                                                        )}
+                                                    </TableCell>
+                                                ))}
                                         </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </div>
-                        <div className="flex items-center justify-end space-x-2 py-4">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.previousPage()}
-                                disabled={!table.getCanPreviousPage()}
-                            >
-                                Previous
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.nextPage()}
-                                disabled={!table.getCanNextPage()}
-                            >
-                                Next
-                            </Button>
-                        </div>
-                    </Grid.Col>
-                </Grid>
-            </Grid.Col>
-        </Grid>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={columns.length}
+                                            className="h-24 text-center"
+                                        >
+                                            No results.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    <div className="flex items-center justify-end space-x-2 py-4">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                        >
+                            Previous
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                        >
+                            Next
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 }
