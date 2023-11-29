@@ -112,9 +112,14 @@ function App() {
                 <div className="grid grid-cols-12 gap-4">
                     <div className="col-start-1 col-end-13">
                         <div className="flex justify-between space-x-2">
-                            <h2 className="text-3xl font-bold tracking-normal">
-                                Git Commit Stats - {title}
-                            </h2>
+                            <div className="flex flex-col">
+                                <div className="text-3xl font-bold tracking-normal">
+                                    Git Commit Stats
+                                </div>
+                                <p className="text-base text-slate-400 tracking-normal">
+                                    {title}
+                                </p>
+                            </div>
                             <Button onClick={import_file}>Import</Button>
                         </div>
                     </div>

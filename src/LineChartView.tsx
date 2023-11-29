@@ -9,6 +9,17 @@ import { connect } from "react-redux";
 
 import { DateRange } from "react-day-picker";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+
 import { Combobox } from "./dashboard/components/combobox";
 import { CalendarDateRangePicker } from "./dashboard/components/date-range-picker";
 
@@ -360,229 +371,300 @@ class LineChartView extends React.Component<ILineChartViewProp> {
         return (
             <>
                 <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-3">
-                        <Combobox
-                            value={this.props.interval}
-                            data={intervals}
-                            placeholder="Select Interval"
-                            onSelected={(interval: string) => {
-                                this.props.setInterval(interval);
-                            }}
-                        ></Combobox>
-                    </div>
-                    <div className="col-span-3">
-                        <Combobox
-                            value={this.props.developer}
-                            data={
-                                this.props.git_log_stats.developer_infos
-                                    ? Object.keys(
-                                          this.props.git_log_stats
-                                              .developer_infos
-                                      ).map((e) => {
-                                          return {
-                                              value: e,
-                                              label: e,
-                                          };
-                                      })
-                                    : []
-                            }
-                            placeholder="Select Developer"
-                            onSelected={(developer: string) => {
-                                this.props.setDeveloper(developer);
-                            }}
-                        ></Combobox>
-                    </div>
-                    <div className="col-span-6">
-                        <CalendarDateRangePicker
-                            value={convertIntoDateRange(this.props.date_range)}
-                            onSelected={(data_range: DateRange | undefined) => {
-                                if (data_range) {
-                                    let number_date_range: [
-                                        number | null,
-                                        number | null
-                                    ] = [null, null];
-
-                                    if (data_range.from !== undefined) {
-                                        number_date_range[0] =
-                                            data_range.from.getTime();
-                                    } else {
-                                        number_date_range[0] = null;
-                                    }
-
-                                    if (data_range.to !== undefined) {
-                                        number_date_range[1] =
-                                            data_range.to.getTime();
-                                    } else {
-                                        number_date_range[1] = null;
-                                    }
-
-                                    this.props.setDateRange(number_date_range);
+                    <div className="col-start-1 col-end-13">
+                        <div className="flex justify-end space-x-2 ">
+                            <Combobox
+                                value={this.props.interval}
+                                data={intervals}
+                                placeholder="Select Interval"
+                                onSelected={(interval: string) => {
+                                    this.props.setInterval(interval);
+                                }}
+                            ></Combobox>
+                            <Combobox
+                                value={this.props.developer}
+                                data={
+                                    this.props.git_log_stats.developer_infos
+                                        ? Object.keys(
+                                              this.props.git_log_stats
+                                                  .developer_infos
+                                          ).map((e) => {
+                                              return {
+                                                  value: e,
+                                                  label: e,
+                                              };
+                                          })
+                                        : []
                                 }
-                            }}
-                        ></CalendarDateRangePicker>
-                    </div>
-                    <div className="col-start-1 col-end-13">
-                        <ResponsiveContainer width="100%" aspect={16.0 / 9.0}>
-                            <LineChart
-                                data={getData(
-                                    this.props.commit_status,
-                                    this.props.interval,
-                                    this.props.developer,
+                                placeholder="Select Developer"
+                                onSelected={(developer: string) => {
+                                    this.props.setDeveloper(developer);
+                                }}
+                            ></Combobox>
+                            <CalendarDateRangePicker
+                                value={convertIntoDateRange(
                                     this.props.date_range
                                 )}
-                                margin={{
-                                    top: 20,
-                                    right: 10,
-                                    left: 10,
-                                    bottom: 60,
+                                onSelected={(
+                                    data_range: DateRange | undefined
+                                ) => {
+                                    if (data_range) {
+                                        let number_date_range: [
+                                            number | null,
+                                            number | null
+                                        ] = [null, null];
+
+                                        if (data_range.from !== undefined) {
+                                            number_date_range[0] =
+                                                data_range.from.getTime();
+                                        } else {
+                                            number_date_range[0] = null;
+                                        }
+
+                                        if (data_range.to !== undefined) {
+                                            number_date_range[1] =
+                                                data_range.to.getTime();
+                                        } else {
+                                            number_date_range[1] = null;
+                                        }
+
+                                        this.props.setDateRange(
+                                            number_date_range
+                                        );
+                                    }
                                 }}
-                            >
-                                <CartesianGrid strokeDasharray="5 5" />
-                                <XAxis
-                                    dataKey="title"
-                                    domain={["dataMin", "dataMax"]}
-                                    tick={<CustomizedAxisTick />}
-                                    label={{
-                                        value: "Dates",
-                                        style: {
-                                            textAnchor: "middle",
-                                        },
-                                        angle: 0,
-                                        position: "bottom",
-                                        offset: 40,
-                                        fontFamily: "sans-serif",
-                                    }}
-                                />
-                                <YAxis
-                                    orientation="left"
-                                    stroke="#222f3e"
-                                    label={{
-                                        value: "# commits",
-                                        style: {
-                                            textAnchor: "middle",
-                                        },
-                                        angle: -90,
-                                        position: "left",
-                                        offset: 0,
-                                        fontFamily: "sans-serif",
-                                    }}
-                                />
-                                <Tooltip />
-                                <Legend
-                                    layout="horizontal"
-                                    verticalAlign="top"
-                                    align="center"
-                                />
-                                {/* https://flatuicolors.com/palette/ca */}
-                                <Line dataKey="num_commits" stroke="#2e86de" />
-                                <ReferenceLine
-                                    y={averageCommits(
-                                        this.props.commit_status,
-                                        this.props.interval,
-                                        this.props.developer,
-                                        this.props.date_range
-                                    )}
-                                    label={{
-                                        value: "",
-                                        position: "right",
-                                    }}
-                                    stroke="#2e86de"
-                                    strokeDasharray="4 4"
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
+                            ></CalendarDateRangePicker>
+                        </div>
                     </div>
                     <div className="col-start-1 col-end-13">
-                        <ResponsiveContainer width="100%" aspect={16.0 / 9.0}>
-                            <LineChart
-                                data={getData(
-                                    this.props.commit_status,
-                                    this.props.interval,
-                                    this.props.developer,
-                                    this.props.date_range
-                                )}
-                                margin={{
-                                    top: 20,
-                                    right: 10,
-                                    left: 10,
-                                    bottom: 60,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="5 5" />
-                                <XAxis
-                                    dataKey="title"
-                                    domain={["dataMin", "dataMax"]}
-                                    tick={<CustomizedAxisTick />}
-                                    label={{
-                                        value: "Dates",
-                                        style: {
-                                            textAnchor: "middle",
-                                        },
-                                        angle: 0,
-                                        position: "bottom",
-                                        offset: 40,
-                                        fontFamily: "sans-serif",
-                                    }}
-                                />
-                                <YAxis
-                                    orientation="left"
-                                    stroke="#222f3e"
-                                    label={{
-                                        value: "# lines",
-                                        style: {
-                                            textAnchor: "middle",
-                                        },
-                                        angle: -90,
-                                        position: "left",
-                                        offset: 0,
-                                        fontFamily: "sans-serif",
-                                    }}
-                                />
-                                <Tooltip />
-                                <Legend
-                                    layout="horizontal"
-                                    verticalAlign="top"
-                                    align="center"
-                                />
-                                {/* https://flatuicolors.com/palette/ca */}
-                                <Line
-                                    dataKey="num_added_lines"
-                                    stroke="#10ac84"
-                                />
-                                <Line
-                                    dataKey="num_deleted_lines"
-                                    stroke="#ee5253"
-                                />
-                                <ReferenceLine
-                                    y={averageAdditions(
-                                        this.props.commit_status,
-                                        this.props.interval,
-                                        this.props.developer,
-                                        this.props.date_range
-                                    )}
-                                    label={{
-                                        value: "",
-                                        position: "right",
-                                    }}
-                                    stroke="#10ac84"
-                                    strokeDasharray="4 4"
-                                />
-                                <ReferenceLine
-                                    y={averageDeletions(
-                                        this.props.commit_status,
-                                        this.props.interval,
-                                        this.props.developer,
-                                        this.props.date_range
-                                    )}
-                                    label={{
-                                        value: "",
-                                        position: "right",
-                                    }}
-                                    stroke="#ee5253"
-                                    strokeDasharray="4 4"
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
+                        <Tabs defaultValue="commits">
+                            <TabsList>
+                                <TabsTrigger value="commits">
+                                    Commits
+                                </TabsTrigger>
+                                <TabsTrigger value="addition&deletion">
+                                    Addition & Deletion
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="commits">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Commits Chart</CardTitle>
+                                        <CardDescription>
+                                            Number of commits.
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer
+                                            width="100%"
+                                            aspect={16.0 / 9.0}
+                                        >
+                                            <LineChart
+                                                data={getData(
+                                                    this.props.commit_status,
+                                                    this.props.interval,
+                                                    this.props.developer,
+                                                    this.props.date_range
+                                                )}
+                                                margin={{
+                                                    top: 20,
+                                                    right: 10,
+                                                    left: 10,
+                                                    bottom: 60,
+                                                }}
+                                            >
+                                                <CartesianGrid strokeDasharray="5 5" />
+                                                <XAxis
+                                                    dataKey="title"
+                                                    domain={[
+                                                        "dataMin",
+                                                        "dataMax",
+                                                    ]}
+                                                    tick={
+                                                        <CustomizedAxisTick />
+                                                    }
+                                                    label={{
+                                                        value: "Dates",
+                                                        style: {
+                                                            textAnchor:
+                                                                "middle",
+                                                        },
+                                                        angle: 0,
+                                                        position: "bottom",
+                                                        offset: 40,
+                                                        fontFamily:
+                                                            "sans-serif",
+                                                    }}
+                                                />
+                                                <YAxis
+                                                    orientation="left"
+                                                    stroke="#222f3e"
+                                                    label={{
+                                                        value: "# commits",
+                                                        style: {
+                                                            textAnchor:
+                                                                "middle",
+                                                        },
+                                                        angle: -90,
+                                                        position: "left",
+                                                        offset: 0,
+                                                        fontFamily:
+                                                            "sans-serif",
+                                                    }}
+                                                />
+                                                <Tooltip />
+                                                <Legend
+                                                    layout="horizontal"
+                                                    verticalAlign="top"
+                                                    align="center"
+                                                />
+                                                {/* https://flatuicolors.com/palette/ca */}
+                                                <Line
+                                                    dataKey="num_commits"
+                                                    stroke="#2e86de"
+                                                />
+                                                <ReferenceLine
+                                                    y={averageCommits(
+                                                        this.props
+                                                            .commit_status,
+                                                        this.props.interval,
+                                                        this.props.developer,
+                                                        this.props.date_range
+                                                    )}
+                                                    label={{
+                                                        value: "",
+                                                        position: "right",
+                                                    }}
+                                                    stroke="#2e86de"
+                                                    strokeDasharray="4 4"
+                                                />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                    <CardFooter></CardFooter>
+                                </Card>
+                            </TabsContent>
+                            <TabsContent value="addition&deletion">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>
+                                            Addition & Deletion Chart
+                                        </CardTitle>
+                                        <CardDescription>
+                                            Number of addition and deletion
+                                            lines.
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer
+                                            width="100%"
+                                            aspect={16.0 / 9.0}
+                                        >
+                                            <LineChart
+                                                data={getData(
+                                                    this.props.commit_status,
+                                                    this.props.interval,
+                                                    this.props.developer,
+                                                    this.props.date_range
+                                                )}
+                                                margin={{
+                                                    top: 20,
+                                                    right: 10,
+                                                    left: 10,
+                                                    bottom: 60,
+                                                }}
+                                            >
+                                                <CartesianGrid strokeDasharray="5 5" />
+                                                <XAxis
+                                                    dataKey="title"
+                                                    domain={[
+                                                        "dataMin",
+                                                        "dataMax",
+                                                    ]}
+                                                    tick={
+                                                        <CustomizedAxisTick />
+                                                    }
+                                                    label={{
+                                                        value: "Dates",
+                                                        style: {
+                                                            textAnchor:
+                                                                "middle",
+                                                        },
+                                                        angle: 0,
+                                                        position: "bottom",
+                                                        offset: 40,
+                                                        fontFamily:
+                                                            "sans-serif",
+                                                    }}
+                                                />
+                                                <YAxis
+                                                    orientation="left"
+                                                    stroke="#222f3e"
+                                                    label={{
+                                                        value: "# lines",
+                                                        style: {
+                                                            textAnchor:
+                                                                "middle",
+                                                        },
+                                                        angle: -90,
+                                                        position: "left",
+                                                        offset: 0,
+                                                        fontFamily:
+                                                            "sans-serif",
+                                                    }}
+                                                />
+                                                <Tooltip />
+                                                <Legend
+                                                    layout="horizontal"
+                                                    verticalAlign="top"
+                                                    align="center"
+                                                />
+                                                {/* https://flatuicolors.com/palette/ca */}
+                                                <Line
+                                                    dataKey="num_added_lines"
+                                                    stroke="#10ac84"
+                                                />
+                                                <Line
+                                                    dataKey="num_deleted_lines"
+                                                    stroke="#ee5253"
+                                                />
+                                                <ReferenceLine
+                                                    y={averageAdditions(
+                                                        this.props
+                                                            .commit_status,
+                                                        this.props.interval,
+                                                        this.props.developer,
+                                                        this.props.date_range
+                                                    )}
+                                                    label={{
+                                                        value: "",
+                                                        position: "right",
+                                                    }}
+                                                    stroke="#10ac84"
+                                                    strokeDasharray="4 4"
+                                                />
+                                                <ReferenceLine
+                                                    y={averageDeletions(
+                                                        this.props
+                                                            .commit_status,
+                                                        this.props.interval,
+                                                        this.props.developer,
+                                                        this.props.date_range
+                                                    )}
+                                                    label={{
+                                                        value: "",
+                                                        position: "right",
+                                                    }}
+                                                    stroke="#ee5253"
+                                                    strokeDasharray="4 4"
+                                                />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                    <CardFooter></CardFooter>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </div>
             </>
