@@ -145,7 +145,7 @@ export default class Overview extends React.Component<IOverviewProp> {
                 <div className="grid grid-cols-12 gap-4">
                     <Card className="col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
+                            <CardTitle className="text-md font-medium">
                                 Total Commits
                             </CardTitle>
                         </CardHeader>
@@ -165,7 +165,7 @@ export default class Overview extends React.Component<IOverviewProp> {
                     </Card>
                     <Card className="col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
+                            <CardTitle className="text-md font-medium">
                                 Developers
                             </CardTitle>
                         </CardHeader>
@@ -186,7 +186,7 @@ export default class Overview extends React.Component<IOverviewProp> {
                     </Card>
                     <Card className="col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
+                            <CardTitle className="text-md font-medium">
                                 Additions
                             </CardTitle>
                         </CardHeader>
@@ -196,7 +196,8 @@ export default class Overview extends React.Component<IOverviewProp> {
                                 {this.props.git_log_stats
                                     .number_of_tatal_additions
                                     ? this.props.git_log_stats.number_of_tatal_additions.toLocaleString()
-                                    : "--"}
+                                    : "--"}{" "}
+                                lines.
                             </div>
                             <p className="text-xs text-muted-foreground">
                                 +20.1% from last month
@@ -205,7 +206,7 @@ export default class Overview extends React.Component<IOverviewProp> {
                     </Card>
                     <Card className="col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
+                            <CardTitle className="text-md font-medium">
                                 Deletions
                             </CardTitle>
                         </CardHeader>
@@ -215,7 +216,8 @@ export default class Overview extends React.Component<IOverviewProp> {
                                 {this.props.git_log_stats
                                     .number_of_tatal_deletions
                                     ? this.props.git_log_stats.number_of_tatal_deletions.toLocaleString()
-                                    : "--"}
+                                    : "--"}{" "}
+                                lines.
                             </div>
                             <p className="text-xs text-muted-foreground">
                                 +20.1% from last month
@@ -224,10 +226,13 @@ export default class Overview extends React.Component<IOverviewProp> {
                     </Card>
 
                     <Card className="col-span-8">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
+                        <CardHeader>
+                            <CardTitle className="text-md font-medium">
                                 Overview
                             </CardTitle>
+                            <CardDescription>
+                                Contributions overview in repository.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <ResponsiveContainer width="100%" minHeight={400}>
@@ -282,10 +287,13 @@ export default class Overview extends React.Component<IOverviewProp> {
                     </Card>
 
                     <Card className="col-span-4">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
+                        <CardHeader>
+                            <CardTitle className="text-md font-medium">
                                 Top 5 Developers
                             </CardTitle>
+                            <CardDescription>
+                                Leading contributors in repository.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             {sortedTop5Developers(
@@ -294,10 +302,10 @@ export default class Overview extends React.Component<IOverviewProp> {
                                 return (
                                     <div className="flex items-center">
                                         <div className="ml-4 space-y-1">
-                                            <p className="text-sm font-medium leading-none">
+                                            <p className="text-md font-medium leading-none">
                                                 {info.name}
                                             </p>
-                                            <p className="text-sm text-muted-foreground">
+                                            <p className="text-md text-muted-foreground">
                                                 {info.email}
                                             </p>
                                         </div>

@@ -457,7 +457,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                     <CardContent>
                                         <ResponsiveContainer
                                             width="100%"
-                                            aspect={16.0 / 9.0}
+                                            aspect={3.0 / 1.0}
                                         >
                                             <LineChart
                                                 data={getData(
@@ -558,7 +558,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                     <CardContent>
                                         <ResponsiveContainer
                                             width="100%"
-                                            aspect={16.0 / 9.0}
+                                            aspect={3.0 / 1.0}
                                         >
                                             <LineChart
                                                 data={getData(
