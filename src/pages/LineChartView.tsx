@@ -2,9 +2,9 @@ import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { setInterval, setDeveloper, setDateRange } from "./slice";
+import { setInterval, setDeveloper, setDateRange } from "../slice";
 
-import type { RootState } from "./store";
+import type { RootState } from "../store";
 import { connect } from "react-redux";
 
 import { DateRange } from "react-day-picker";
@@ -20,8 +20,8 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-import { Combobox } from "./dashboard/components/combobox";
-import { CalendarDateRangePicker } from "./dashboard/components/date-range-picker";
+import { Combobox } from "../dashboard/components/combobox";
+import { CalendarDateRangePicker } from "../dashboard/components/date-range-picker";
 
 import {
     LineChart,
@@ -35,7 +35,7 @@ import {
     ReferenceLine,
 } from "recharts";
 
-import { OneCommitStatus, CommitStatus, GitLogStats } from "./struct";
+import { OneCommitStatus, CommitStatus, GitLogStats } from "../struct";
 
 function convertIntoDateRange(
     date_range: [number | null, number | null]

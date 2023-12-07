@@ -20,7 +20,7 @@ import {
     Legend,
 } from "recharts";
 
-import { CommitStatus, GitLogStats, DeveloperInfos } from "./struct";
+import { CommitStatus, GitLogStats, DeveloperInfos } from "../struct";
 
 type ResultObject = {
     [key: string]: any;

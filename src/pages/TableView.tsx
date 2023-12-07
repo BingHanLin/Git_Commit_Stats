@@ -9,7 +9,7 @@ import { stringify } from "csv-stringify/browser/esm/sync";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
-import { CommitStatus, OneCommitStatus } from "./struct";
+import { CommitStatus, OneCommitStatus } from "../struct";
 import { DataTable } from "./DataTable";
 
 export const columns: ColumnDef<OneCommitStatus>[] = [

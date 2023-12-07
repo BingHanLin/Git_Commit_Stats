@@ -20,9 +20,9 @@ import { UserNav } from "./dashboard/components/user-nav";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 
-import LineChartView from "./LineChartView";
-import TableView from "./TableView";
-import Overview from "./Overview";
+import LineChartView from "./pages/LineChartView";
+import TableView from "./pages/TableView";
+import Overview from "./pages/Overview";
 
 import { CommitStatus, GitLogStats } from "./struct";
 
