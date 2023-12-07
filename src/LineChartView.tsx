@@ -469,7 +469,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                 margin={{
                                                     top: 20,
                                                     right: 10,
-                                                    left: 10,
+                                                    left: 20,
                                                     bottom: 60,
                                                 }}
                                             >
@@ -570,7 +570,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
                                                 margin={{
                                                     top: 20,
                                                     right: 10,
-                                                    left: 10,
+                                                    left: 20,
                                                     bottom: 60,
                                                 }}
                                             >

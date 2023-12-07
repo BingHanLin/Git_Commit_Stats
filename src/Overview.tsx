@@ -86,6 +86,68 @@ function getData(
     return [];
 }
 
+function getActiveDevelopers30InDay(data: CommitStatus): number {
+    let date30Ago = new Date();
+    date30Ago.setDate(date30Ago.getDate() - 30);
+
+    const filteredData = data.filter((item) => {
+        let date = new Date(item.year, item.month, item.month);
+        return date.getTime() >= date30Ago.getTime();
+    });
+
+    const authors = new Set<string>();
+
+    filteredData.forEach((item) => {
+        authors.add(item.author_name);
+    });
+
+    return authors.size;
+}
+
+function getCommitsIn30Day(data: CommitStatus): number {
+    let date30Ago = new Date();
+    date30Ago.setDate(date30Ago.getDate() - 30);
+
+    const filteredData = data.filter((item) => {
+        let date = new Date(item.year, item.month, item.month);
+        return date.getTime() >= date30Ago.getTime();
+    });
+
+    return filteredData.length;
+}
+
+function getAdditionIn30Day(data: CommitStatus): number {
+    let date30Ago = new Date();
+    date30Ago.setDate(date30Ago.getDate() - 30);
+
+    const filteredData = data.filter((item) => {
+        let date = new Date(item.year, item.month, item.month);
+        return date.getTime() >= date30Ago.getTime();
+    });
+
+    const total: number = filteredData.reduce((accumulator, item) => {
+        return accumulator + item.num_added_lines;
+    }, 0);
+
+    return total;
+}
+
+function getDeletionIn30Day(data: CommitStatus): number {
+    let date30Ago = new Date();
+    date30Ago.setDate(date30Ago.getDate() - 30);
+
+    const filteredData = data.filter((item) => {
+        let date = new Date(item.year, item.month, item.month);
+        return date.getTime() >= date30Ago.getTime();
+    });
+
+    const total: number = filteredData.reduce((accumulator, item) => {
+        return accumulator + item.num_deleted_lines;
+    }, 0);
+
+    return total;
+}
+
 function sortedTop5Developers(
     data: Map<string, DeveloperInfos>
 ): DeveloperInfos[] {
@@ -159,7 +221,10 @@ export default class Overview extends React.Component<IOverviewProp> {
                                 commits.
                             </div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                {getCommitsIn30Day(
+                                    this.props.commit_status
+                                ).toLocaleString()}{" "}
+                                commits in the past 30 days.
                             </p>
                         </CardContent>
                     </Card>
@@ -180,7 +245,10 @@ export default class Overview extends React.Component<IOverviewProp> {
                                 developers.
                             </div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                {getActiveDevelopers30InDay(
+                                    this.props.commit_status
+                                )}{" "}
+                                active developers in the past 30 days.
                             </p>
                         </CardContent>
                     </Card>
@@ -200,7 +268,10 @@ export default class Overview extends React.Component<IOverviewProp> {
                                 lines.
                             </div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                {getAdditionIn30Day(
+                                    this.props.commit_status
+                                ).toLocaleString()}{" "}
+                                lines are added in the past 30 days.
                             </p>
                         </CardContent>
                     </Card>
@@ -220,7 +291,10 @@ export default class Overview extends React.Component<IOverviewProp> {
                                 lines.
                             </div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                {getDeletionIn30Day(
+                                    this.props.commit_status
+                                ).toLocaleString()}{" "}
+                                lines are deleted in the past 30 days.
                             </p>
                         </CardContent>
                     </Card>

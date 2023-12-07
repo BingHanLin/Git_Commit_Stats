@@ -12,8 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDateRangePicker } from "./dashboard/components/date-range-picker";
-import { MainNav } from "./dashboard/components/main-nav";
-// import { Overview } from "./dashboard/components/overview";
 import { RecentSales } from "./dashboard/components/recent-sales";
 import { Search } from "./dashboard/components/search";
 import TeamSwitcher from "./dashboard/components/team-switcher";
