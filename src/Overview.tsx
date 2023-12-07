@@ -1,8 +1,13 @@
 import React from "react";
 
-import { Grid, Card, Text, Group, Stack } from "@mantine/core";
-
-import { CommitStatus, GitLogStats, DeveloperInfos } from "./struct";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 import {
     BarChart,
@@ -14,6 +19,8 @@ import {
     YAxis,
     Legend,
 } from "recharts";
+
+import { CommitStatus, GitLogStats, DeveloperInfos } from "./struct";
 
 type ResultObject = {
     [key: string]: any;
@@ -134,161 +141,177 @@ export default class Overview extends React.Component<IOverviewProp> {
 
     public render() {
         return (
-            <Grid align="stretch" columns={12}>
-                <Grid.Col span={3}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Group mt="md" mb="xs">
-                            <Text fw={500}>Total Commits</Text>
-                        </Group>
-                        <Group mt="md" spacing="xs">
-                            <Text size="lg">
+            <>
+                <div className="grid grid-cols-12 gap-4">
+                    <Card className="col-span-3">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Total Commits
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {" "}
                                 {this.props.git_log_stats
                                     .number_of_tatal_commits
                                     ? this.props.git_log_stats.number_of_tatal_commits.toLocaleString()
-                                    : "--"}
-                            </Text>
-                            <Text size="sm" c="dimmed">
+                                    : "--"}{" "}
                                 commits.
-                            </Text>
-                        </Group>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                +20.1% from last month
+                            </p>
+                        </CardContent>
                     </Card>
-                </Grid.Col>
-                <Grid.Col span={3}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Group mt="md" mb="xs">
-                            <Text fw={500}>Developers</Text>
-                        </Group>
-                        <Group mt="md" spacing="xs">
-                            <Text size="lg">
+                    <Card className="col-span-3">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Developers
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
                                 {this.props.git_log_stats.developer_infos
                                     ? Object.keys(
                                           this.props.git_log_stats
                                               .developer_infos
                                       ).length.toLocaleString()
-                                    : "--"}
-                            </Text>
-                            <Text size="sm" c="dimmed">
+                                    : "--"}{" "}
                                 developers.
-                            </Text>
-                        </Group>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                +20.1% from last month
+                            </p>
+                        </CardContent>
                     </Card>
-                </Grid.Col>
-                <Grid.Col span={3}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Group mt="md" mb="xs">
-                            <Text fw={500}>Additions</Text>
-                        </Group>
-
-                        <Group mt="md" spacing="xs">
-                            <Text size="lg">
+                    <Card className="col-span-3">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Additions
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                +
                                 {this.props.git_log_stats
                                     .number_of_tatal_additions
                                     ? this.props.git_log_stats.number_of_tatal_additions.toLocaleString()
                                     : "--"}
-                            </Text>
-                            <Text size="sm" c="dimmed">
-                                lines added,
-                            </Text>
-                        </Group>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                +20.1% from last month
+                            </p>
+                        </CardContent>
                     </Card>
-                </Grid.Col>
-                <Grid.Col span={3}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Group mt="md" mb="xs">
-                            <Text fw={500}>Deletions</Text>
-                        </Group>
-                        <Group mt="md" spacing="xs">
-                            <Text size="lg">
+                    <Card className="col-span-3">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Deletions
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                -
                                 {this.props.git_log_stats
                                     .number_of_tatal_deletions
                                     ? this.props.git_log_stats.number_of_tatal_deletions.toLocaleString()
                                     : "--"}
-                            </Text>
-                            <Text size="sm" c="dimmed">
-                                lines deleted.
-                            </Text>
-                        </Group>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                +20.1% from last month
+                            </p>
+                        </CardContent>
                     </Card>
-                </Grid.Col>
-                <Grid.Col span={9}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Group mt="md" mb="xs">
-                            <Text fw={500}>Commits Overview</Text>
-                        </Group>
-                        <ResponsiveContainer width="100%" minHeight={400}>
-                            <BarChart
-                                data={getData(
-                                    this.props.commit_status,
-                                    this.props.git_log_stats.developer_infos
-                                )}
-                                margin={{
-                                    top: 0,
-                                    right: 0,
-                                    left: 0,
-                                    bottom: 0,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis
-                                    dataKey="title"
-                                    domain={["dataMin", "dataMax"]}
-                                />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                {this.props.git_log_stats.developer_infos &&
-                                    Object.keys(
+
+                    <Card className="col-span-8">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Overview
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ResponsiveContainer width="100%" minHeight={400}>
+                                <BarChart
+                                    data={getData(
+                                        this.props.commit_status,
                                         this.props.git_log_stats.developer_infos
-                                    ).map((author, index) => {
-                                        let color_index = index;
-                                        while (
-                                            color_index >= color_array.length
-                                        ) {
-                                            color_index -= color_array.length;
-                                        }
+                                    )}
+                                    margin={{
+                                        top: 0,
+                                        right: 0,
+                                        left: 0,
+                                        bottom: 0,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                        dataKey="title"
+                                        domain={["dataMin", "dataMax"]}
+                                    />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    {this.props.git_log_stats.developer_infos &&
+                                        Object.keys(
+                                            this.props.git_log_stats
+                                                .developer_infos
+                                        ).map((author, index) => {
+                                            let color_index = index;
+                                            while (
+                                                color_index >=
+                                                color_array.length
+                                            ) {
+                                                color_index -=
+                                                    color_array.length;
+                                            }
 
-                                        return (
-                                            <Bar
-                                                key={author}
-                                                dataKey={author}
-                                                stackId="a"
-                                                fill={color_array[color_index]}
-                                            />
-                                        );
-                                    })}
-                            </BarChart>
-                        </ResponsiveContainer>
+                                            return (
+                                                <Bar
+                                                    key={author}
+                                                    dataKey={author}
+                                                    stackId="a"
+                                                    fill={
+                                                        color_array[color_index]
+                                                    }
+                                                />
+                                            );
+                                        })}
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
                     </Card>
-                </Grid.Col>
 
-                <Grid.Col span={3}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Group mt="md" mb="xs">
-                            <Text fw={500}>Top 5 Developers</Text>
-                        </Group>
-                        <Stack>
+                    <Card className="col-span-4">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Top 5 Developers
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
                             {sortedTop5Developers(
                                 this.props.git_log_stats.developer_infos
                             ).map((info) => {
                                 return (
-                                    <Stack key={info.name} spacing="xm">
-                                        <Group>
-                                            <Text fw={500}>{info.name}</Text>
-                                            <Text fw={500} c="dimmed">
-                                                {info.number_of_commits.toLocaleString()}{" "}
-                                                commits
-                                            </Text>
-                                        </Group>
-                                        <Text size="sm" c="dimmed">
-                                            {info.email}
-                                        </Text>
-                                    </Stack>
+                                    <div className="flex items-center">
+                                        <div className="ml-4 space-y-1">
+                                            <p className="text-sm font-medium leading-none">
+                                                {info.name}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                {info.email}
+                                            </p>
+                                        </div>
+                                        <div className="ml-auto font-medium">
+                                            +
+                                            {info.number_of_commits.toLocaleString()}{" "}
+                                        </div>
+                                    </div>
                                 );
                             })}
-                        </Stack>
+                        </CardContent>
                     </Card>
-                </Grid.Col>
-            </Grid>
+                </div>
+            </>
         );
     }
 }
