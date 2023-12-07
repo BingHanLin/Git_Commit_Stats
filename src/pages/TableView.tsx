@@ -1,19 +1,16 @@
 import React from "react";
 
-import { Grid, Card, Button, Stack } from "@mantine/core";
+import { Button } from "@/components/ui/button";
 
 import { save } from "@tauri-apps/api/dialog";
 import { writeTextFile } from "@tauri-apps/api/fs";
 import { stringify } from "csv-stringify/browser/esm/sync";
 
-import {
-    ColumnDef,
-} from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
-import { CommitStatus, OneCommitStatus } from "./struct";
-import { DataTable } from "./DataTable"
-
+import { CommitStatus, OneCommitStatus } from "../struct";
+import { DataTable } from "./DataTable";
 
 export const columns: ColumnDef<OneCommitStatus>[] = [
     {
@@ -22,26 +19,26 @@ export const columns: ColumnDef<OneCommitStatus>[] = [
             return (
                 <Button
                     variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
                 >
                     Author
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
-            )
+            );
         },
-        meta: "Author"
+        meta: "Author",
     },
     {
         accessorKey: "author_email",
         header: "Email",
-        meta: "Email"
-
+        meta: "Email",
     },
     {
         accessorKey: "message",
         header: "Message",
-        meta: "Message"
-
+        meta: "Message",
     },
     {
         accessorKey: "time_stamp",
@@ -49,17 +46,18 @@ export const columns: ColumnDef<OneCommitStatus>[] = [
             return (
                 <Button
                     variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
                 >
                     Time Stamp
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
-            )
+            );
         },
-        meta: "Time Stamp"
-
-    }
-]
+        meta: "Time Stamp",
+    },
+];
 
 interface ITableViewProp {
     commit_status: CommitStatus;
@@ -88,7 +86,9 @@ export default class TableView extends React.Component<ITableViewProp, {}> {
                 console.log("canceld.");
             } else {
                 if (typeof file_path === "string") {
-                    const output = stringify(this.props.commit_status, { header: true });
+                    const output = stringify(this.props.commit_status, {
+                        header: true,
+                    });
                     await writeTextFile(file_path, output, { append: false });
                 }
             }
@@ -98,16 +98,6 @@ export default class TableView extends React.Component<ITableViewProp, {}> {
     }
 
     public render() {
-        return (
-            <Grid align="stretch" columns={12} >
-                <Grid.Col span={12}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Stack>
-                            <DataTable columns={columns} data={this.props.commit_status} />
-                        </Stack>
-                    </Card>
-                </Grid.Col>
-            </Grid >
-        );
+        return <DataTable columns={columns} data={this.props.commit_status} />;
     }
 }
