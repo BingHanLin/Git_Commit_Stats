@@ -181,22 +181,22 @@ const color_array = [
     "#f368e0",
 ];
 
-interface IOverviewProp {
+interface IOverviewPageProp {
     commit_status: CommitStatus;
     git_log_stats: GitLogStats;
 }
 
-export default class Overview extends React.Component<IOverviewProp> {
-    constructor(props: IOverviewProp) {
+export default class OverviewPage extends React.Component<IOverviewPageProp> {
+    constructor(props: IOverviewPageProp) {
         super(props);
     }
 
     componentWillUnmount() {
-        console.log("Overview WILL UNMOUNT!");
+        console.log("OverviewPage WILL UNMOUNT!");
     }
 
-    componentDidUpdate(prevProps: IOverviewProp) {
-        console.log("Overview  componentDidUpdate!");
+    componentDidUpdate(prevProps: IOverviewPageProp) {
+        console.log("OverviewPage  componentDidUpdate!");
         // console.log(this.props.git_log_stats.developer_infos)
         // let v = this.props.git_log_stats.developer_infos as Map<string, DeveloperInfos>;
     }
@@ -302,10 +302,10 @@ export default class Overview extends React.Component<IOverviewProp> {
                     <Card className="col-span-8">
                         <CardHeader>
                             <CardTitle className="text-md font-medium">
-                                Overview
+                                OverviewPage
                             </CardTitle>
                             <CardDescription>
-                                Contributions overview in repository.
+                                Contributions OverviewPage in repository.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>

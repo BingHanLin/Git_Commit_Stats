@@ -59,12 +59,15 @@ export const columns: ColumnDef<OneCommitStatus>[] = [
     },
 ];
 
-interface ITableViewProp {
+interface ITableViewPageProp {
     commit_status: CommitStatus;
 }
 
-export default class TableView extends React.Component<ITableViewProp, {}> {
-    constructor(props: ITableViewProp) {
+export default class TableViewPage extends React.Component<
+    ITableViewPageProp,
+    {}
+> {
+    constructor(props: ITableViewPageProp) {
         super(props);
         this.export_file = this.export_file.bind(this);
     }

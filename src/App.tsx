@@ -20,9 +20,9 @@ import { UserNav } from "./dashboard/components/user-nav";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 
-import LineChartView from "./pages/LineChartView";
-import TableView from "./pages/TableView";
-import Overview from "./pages/Overview";
+import ChartViewPage from "./pages/ChartViewPage";
+import TableViewPage from "./pages/TableViewPage";
+import OverviewPage from "./pages/OverviewPage";
 
 import { CommitStatus, GitLogStats } from "./struct";
 
@@ -94,13 +94,13 @@ function App() {
         //     path: "/LineChart",
         //     name: "Line Chart",
         //     exact: true,
-        //     component: <LineChartView commit_status={commit_status} git_log_stats={git_log_stats} />
+        //     component: <ChartViewPage commit_status={commit_status} git_log_stats={git_log_stats} />
         // },
         // {
-        //     path: "/TableView",
+        //     path: "/TableViewPage",
         //     name: "Table",
         //     exact: false,
-        //     component: <TableView commit_status={commit_status} />
+        //     component: <TableViewPage commit_status={commit_status} />
         // }
     ];
 
@@ -277,7 +277,7 @@ function App() {
                                 </div>
                             </TabsContent>
                             <TabsContent value="overview" className="space-y-4">
-                                <Overview
+                                <OverviewPage
                                     commit_status={commit_status}
                                     git_log_stats={git_log_stats}
                                 />
@@ -286,13 +286,13 @@ function App() {
                                 value="analytics"
                                 className="space-y-4"
                             >
-                                <LineChartView
+                                <ChartViewPage
                                     commit_status={commit_status}
                                     git_log_stats={git_log_stats}
                                 />
                             </TabsContent>
                             <TabsContent value="reports" className="space-y-4">
-                                <TableView commit_status={commit_status} />
+                                <TableViewPage commit_status={commit_status} />
                             </TabsContent>
                         </Tabs>
                     </div>

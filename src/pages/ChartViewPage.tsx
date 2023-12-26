@@ -246,7 +246,7 @@ const intervals = [
     { value: "date", label: "Date" },
 ];
 
-interface ILineChartViewProp {
+interface IChartViewPageProp {
     commit_status: CommitStatus;
     git_log_stats: GitLogStats;
     interval: string;
@@ -284,17 +284,17 @@ export const CustomizedAxisTick = ({
     );
 };
 
-class LineChartView extends React.Component<ILineChartViewProp> {
-    constructor(props: ILineChartViewProp) {
+class ChartViewPage extends React.Component<IChartViewPageProp> {
+    constructor(props: IChartViewPageProp) {
         super(props);
     }
 
     componentWillUnmount() {
-        console.log("LineChartView WILL UNMOUNT!");
+        console.log("ChartViewPage WILL UNMOUNT!");
     }
 
     componentDidMount() {
-        console.log("LineChartViewcomponentDidMount!");
+        console.log("ChartViewPagecomponentDidMount!");
         if (
             this.props.git_log_stats &&
             this.props.git_log_stats.developer_infos
@@ -328,8 +328,8 @@ class LineChartView extends React.Component<ILineChartViewProp> {
         }
     }
 
-    componentDidUpdate(prevProps: ILineChartViewProp) {
-        console.log("LineChartView componentDidUpdate!");
+    componentDidUpdate(prevProps: IChartViewPageProp) {
+        console.log("ChartViewPage componentDidUpdate!");
 
         if (
             this.props.git_log_stats &&
@@ -364,7 +364,7 @@ class LineChartView extends React.Component<ILineChartViewProp> {
             this.props.setDateRange([date1.getTime(), date2.getTime()]);
         }
 
-        console.log("LineChartView componentDidUpdate!...");
+        console.log("ChartViewPage componentDidUpdate!...");
     }
 
     public render() {
@@ -682,4 +682,4 @@ export default connect(mapStateToProps, {
     setInterval,
     setDeveloper,
     setDateRange,
-})(LineChartView);
+})(ChartViewPage);
